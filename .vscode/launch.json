@@ -1,0 +1,18 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ccs",
+            "type": "gdb",
+            "request": "launch",
+            "target": "./target/debug/ccs",
+            "arguments": "-t 8 -i ./tests/sim_circ.fasta.gz -o ./tests/ccs.fa -r ./tests/raw.fa",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "build",
+            "env": { "RUST_BACKTRACE": "full" },
+        }
+    ]
+}
