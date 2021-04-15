@@ -7,9 +7,10 @@ use anyhow::{Context, Result, anyhow, bail};
 use needletail::{parse_fastx_file, Sequence};
 use needletail::parser::{SequenceRecord, LineEnding};
 use bio::alignment::{pairwise, AlignmentOperation};
+use rayon::prelude::*;
 
-use crate::kmer::{split_kmers, kmer_to_str};
-use crate::sim::filter_read_id;
+use crate::kmer::{mbleven, split_kmers};
+// use crate::sim::filter_read_id;
 use crate::math::{call_peak, editing_distance, kmer_distance};
 use crate::spoa::poa_consensus;
 use crate::logger::info;
@@ -37,17 +38,21 @@ pub fn scan_ccs_reads(
 
     let mut n = 0;
     let mut n_ccs = 0;
+
+    // let mut input_sequences: Vec<SequenceRecord> = Vec::with_capacity(1000000);
+
     while let Some(record) = reader.next()  {
         let seqrec = record.with_context(|| format!("Unvalid sequence record"))?;
         let seq_id = String::from_utf8(seqrec.id().to_vec()).unwrap();
-        
+
+    // for seqrec in &input_sequences {
         // let is_circ = filter_read_id(&seq_id);
         // if !is_circ {
         //     continue;
         // }
 
         n += 1;
-        if n % 100 == 0 {
+        if n % 1000000 == 0 {
             info(format!("Loaded {} reads", n));
         }
 
@@ -83,11 +88,11 @@ fn find_concensus(seqrec: &SequenceRecord) -> Result<(Vec<(usize, usize)>, Strin
         return Err(anyhow!("Reads too short"));
     }
 
-    let cand_k = vec![11u8, 8u8];
-    for k in &cand_k {
-        let tmp_chain = match circular_finder(seq, &k) {
+    let cand_param = vec![(11u8, false), (8u8, false), (11u8, true), (8u8, true)];
+    for (k, is_hpc) in &cand_param {
+        let tmp_chain = match circular_finder(seq, &k, &is_hpc) {
             Ok(x) => x,
-            Err(_) => continue,
+            Err(e) => continue,
         };
 
         let mut seqs: Vec<Vec<u8>>= Vec::with_capacity(tmp_chain.len());
@@ -128,14 +133,14 @@ fn find_concensus(seqrec: &SequenceRecord) -> Result<(Vec<(usize, usize)>, Strin
     Err(anyhow!("No circular sequence found."))
 }
 
-fn circular_finder(seq: &[u8], k: &u8) -> Result<Vec<(usize, usize)>> {
+fn circular_finder(seq: &[u8], k: &u8, is_hpc: &bool) -> Result<Vec<(usize, usize)>> {
     let p_match = 0.85;
     let p_indel = 0.1;
     let d_min = 40;
     let support_min = 2i32;
 
     // Split into kmers
-    let tmp_ret = split_kmers(&seq, &k);
+    let tmp_ret = split_kmers(&seq, &k, &is_hpc);
     let kmer_idx: BTreeMap::<usize, u64> = tmp_ret.0;
     let kmer_occ: HashMap::<u64, Vec<usize>> = tmp_ret.1;
 
@@ -150,11 +155,11 @@ fn circular_finder(seq: &[u8], k: &u8) -> Result<Vec<(usize, usize)>> {
     }
 
     // Find optimal hits
-    let hits = circular_hits(&kmer_idx, &k, &d_mean, &d_delta, &p_match)?;
+    let hits = circular_hits(&kmer_idx, &k, &d_mean, &d_delta, &p_match, &is_hpc)?;
     if hits.len() == 0 {
         return Err(anyhow!("No optimal hits."));
     }
-
+    
     let chain = optimal_chains(&hits)?;
     
     let segments = split_sequence(&chain, seq)?;
@@ -207,13 +212,9 @@ fn estimate_distance(
     if dis_uniq.len() == 1 {
         d_mean = dis_uniq[0];
     } else {
-        // d_mean = call_peak(&tuple_dis, "scott");
         match call_peak(&tuple_dis, "scott") {
             Ok(x) => d_mean = x,
-            Err(e) => {
-                eprintln!("{:?}", tuple_dis);
-                return Ok((0, 0, 0));
-            }
+            Err(e) => return Ok((0, 0, 0)),
         }
     }
     let mut d_support = 0i32;
@@ -225,7 +226,7 @@ fn estimate_distance(
     assert!(d_support > 0i32);
 
     // Random walk model
-    let d_delta = (2.3 * p_indel * (d_mean as f32)).sqrt() as i32;
+    let d_delta = (2.3 * (p_indel * (d_mean as f32)).sqrt()) as i32;
 
     Ok((d_mean, d_delta, d_support))
 }
@@ -240,12 +241,13 @@ fn circular_hits(
     d_mean: &i32,
     d_delta: &i32,
     p_match: &f32,
+    is_hpc: &bool,
 ) -> Result<BTreeMap::<usize, (usize, usize, usize, usize)>> {
     let mut hits = BTreeMap::<usize, (usize, usize, usize, usize)>::default();
     for (pos, seed) in all_kmers {
         let s: usize = (*pos as i32 + *d_mean - *d_delta) as usize;
         let e: usize = (*pos as i32 + *d_mean + *d_delta) as usize;
-        let ret = optimal_hit(all_kmers, seed, k, &s, &e)?;
+        let ret = optimal_hit(all_kmers, seed, k, &s, &e, &is_hpc)?;
         let j = ret.0;
         let score = ret.2;
         if score > ((*k as f32) * (1.0 - *p_match)) as usize {
@@ -266,31 +268,53 @@ fn optimal_hit(
     k: &u8,
     s: &usize,
     e: &usize,
+    is_hpc: &bool,
 ) -> Result<(usize, u64, usize, usize)> {
     let mut hits: Vec<(usize, u64, usize, usize)> = Vec::with_capacity(e - s + 1);
     for i in *s..(*e+1) {
         if !all_kmers.contains_key(&i) {
             continue;
         }
-        let tmp = all_kmers.get(&i).unwrap();
-        let tmp_dis = kmer_distance(seed, tmp, k)?;
-        
+        let tmp = all_kmers.get(&i).unwrap();       
+        let tmp_dis = mbleven(seed, tmp, k)?;
         hits.push((i, *tmp, tmp_dis, max(i.wrapping_sub(*s), e.wrapping_sub(i))));
     }
+
     if hits.len() == 0 {
         return Ok((0, 0, *k as usize, 0));
     }
+    if *is_hpc && hits.len() > 1 {
+        hits = collapse_hits(&hits)?;
+    }
+
     let mut min_dis = *k as usize;
     let mut min_shift = *e + *s;
     let mut best_hit = hits[0];
+
     for x in &hits {
-        if x.2 < min_dis && x.3 < min_shift {
+        if x.2 < min_dis || (x.2 == min_dis && x.3 < min_shift) {
             best_hit = *x;
             min_dis = x.2;
             min_shift = x.3;
         }
     }
     Ok(best_hit)
+}
+
+pub fn collapse_hits(
+    hits: &Vec<(usize, u64, usize, usize)>,
+) -> Result<Vec<(usize, u64, usize, usize)>> {
+    let mut collapsed: Vec<(usize, u64, usize, usize)> = Vec::with_capacity(hits.len());
+    for i in 0..hits.len()-1 {
+        if hits[i].0 == hits[i+1].0 + 1 && hits[i].1 == hits[i+1].1 {
+            continue;
+        }
+        if i == 0 {
+            collapsed.push(hits[i]);
+        }
+        collapsed.push(hits[i+1]);
+    }
+    Ok(collapsed)
 }
 
 /// Intersect hits into longest chains
@@ -402,7 +426,7 @@ fn split_sequence(
 
             let mut q_shift: usize = 0;
             let mut r_shift: usize = 0;
-            
+
             for x in alignment.operations {
                 match x {
                     AlignmentOperation::Match => {q_shift += 1; r_shift += 1;},
@@ -421,7 +445,7 @@ fn split_sequence(
             boundaries.push(last_x);
         }
     }
-
+    
     let mut segments: Vec<(usize, usize)> = Vec::with_capacity(boundaries.len());
     for i in 0..boundaries.len()-1 {
         segments.push((boundaries[i], boundaries[i+1]));

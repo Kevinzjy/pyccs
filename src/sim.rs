@@ -42,6 +42,11 @@ pub fn filter_read_id(read_id: &str) -> bool {
     let middle: u32 = attr_vec[6].parse::<u32>().unwrap();
     let tail: u32 = attr_vec[7].parse::<u32>().unwrap();
 
+
+    // if read_id != "ENSMUST00000021181|ENSMUSG00000020831|11:70236877-70237625|-|197_1126_aligned_43558_F_52_821_60" {
+    //     return false;
+    // }
+
     // aligned to circRNA
     if is_aligned == "unaligned" {
         return false;

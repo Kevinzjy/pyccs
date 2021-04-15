@@ -13,6 +13,7 @@ pub fn kmer_to_vec(kmer: &u64, k: &u8) -> Result<Vec<u8>> {
             3 => 84,
             _ => continue,
         };
+        // bases.push((marker * mask) as u8);
         bases.push(c);
         marker = marker >> 2;
     }
@@ -26,12 +27,13 @@ pub fn kmer_to_str(kmer: &u64, k: &u8) -> Result<String> {
     Ok(kstr)
 }
 
-pub fn iter_kmers(seq: &[u8], k: &u8) -> Vec<(usize, u64)> {
+pub fn iter_kmers(seq: &[u8], k: &u8, is_hpc: &bool) -> Vec<(usize, u64)> {
     let mask = (1 << 2 * *k) - 1;
 
     let mut kmers: Vec<(usize, u64)> = Vec::with_capacity(seq.len());
     let mut marker = 0u64;
-
+    let mut last_c = 4u64;
+    let mut last_size = 0usize;
     for i in 0..seq.len() {
         let c = match seq[i] {
             65 => 0, // A
@@ -40,8 +42,13 @@ pub fn iter_kmers(seq: &[u8], k: &u8) -> Vec<(usize, u64)> {
             84 => 3, // T
             _ => continue,
         };
+        if *is_hpc && last_c == c {
+            continue;
+        }
+        last_size += 1;
         marker = (marker << 2 | c ) & mask;
-        if i < (*k - 1) as usize {
+        last_c = c;
+        if i < (*k - 1) as usize || last_size < *k as usize{
             continue;
         }
         kmers.push((i, marker));
@@ -61,11 +68,12 @@ pub fn iter_kmers(seq: &[u8], k: &u8) -> Vec<(usize, u64)> {
 pub fn split_kmers(
     seq: &[u8], 
     k: &u8,
+    is_hpc: &bool,
 ) -> (BTreeMap<usize, u64>, HashMap::<u64, Vec<usize>>) {
     let mut kmer_idx = BTreeMap::<usize, u64>::default();
     let mut kmer_occ = HashMap::<u64, Vec<usize>>::default();
 
-    let kmers: Vec<(usize, u64)> = iter_kmers(seq, k);
+    let kmers: Vec<(usize, u64)> = iter_kmers(seq, k, is_hpc);
     for (x, kmer) in &kmers {
         kmer_idx.entry(*x).or_insert(*kmer);
         kmer_occ.entry(*kmer)
@@ -74,6 +82,72 @@ pub fn split_kmers(
     }
 
     (kmer_idx, kmer_occ)
+}
+
+// Editing model
+// Replace -> 0, INSERT -> 1, DELETION -> -1
+
+pub static MODELS: [[i8; 2]; 3] = [
+    [1, -1], [-1, 1], [0, 0], 
+];
+
+// Mbleven algorithm
+// From: https://github.com/fujimotos/mbleven/blob/master/mbleven.py
+
+pub fn mbleven(
+    kmer1: &u64,
+    kmer2: &u64,
+    k: &u8,
+) -> Result<usize> {
+    let mut res = 3usize;
+    for model in &MODELS {
+        let cost = check_model(&kmer1, &kmer2, &k, &model);
+        if cost < res {
+            res = cost;
+        }
+    }
+    Ok(res)
+}
+
+pub fn check_model(
+    kmer1: &u64,
+    kmer2: &u64,
+    k: &u8,
+    model: &[i8; 2],
+) -> usize {
+    let mask = 3u8;
+    let mut idx1 = 0u8;
+    let mut idx2 = 0u8;
+    let mut cost = 0u8;
+    let mut pad = 0u8;
+
+    while idx1 < *k && idx2 < *k {
+        let c1 = kmer1 >> 2*(*k-1-idx1) & mask as u64;
+        let c2 = kmer2 >> 2*(*k-1-(idx2-pad)) & mask as u64;
+        if c1 != c2 {
+            cost += 1;
+            if 2 < cost {
+                return cost as usize;
+            }
+            let option = model[cost as usize-1];
+            match option {
+                -1i8 => idx1 += 1,
+                1i8 => idx2 += 1,
+                0i8 => {
+                    idx1 += 1;
+                    idx2 += 1;
+                    pad = 0;
+                },
+                _ => continue,
+            };
+        } else {
+            idx1 += 1;
+            idx2 += 1;
+            pad = 0;
+        }
+
+    }
+    (cost + *k - idx1 + *k - idx2) as usize
 }
 
 
@@ -98,13 +172,21 @@ mod tests {
 
     #[test]
     fn test_kmer() {
-        let seq = "AAGTCGATCGAAGCTGATCGATCGATCGTGCTACGTGATGATGCTAGCCTGACTGATCGTAGCAGC";
-        let kmers = iter_kmers(&seq.as_bytes(), &8);
-        for (pos, kmer) in &kmers {
-            let _kmer = kmer_to_str(kmer, &8);
-            println!("{:?}", _kmer);
-        }
-        println!("{:?}", split_kmers(&seq.as_bytes(), &8));
+        let is_hpc = true;
+        let seq = "AAGGTCGATCGAAGCTGATCGATCGATCGTGCTACGTGATGATGCTAGCCTGACTGATCGTAGCAGC";
+        let kmers = iter_kmers(&seq.as_bytes(), &8, &is_hpc);
+        // for (pos, kmer) in &kmers {
+        //     let _kmer = kmer_to_str(kmer, &8);
+        //     println!("{:?}", _kmer);
+        // }
+        println!("{:?}", split_kmers(&seq.as_bytes(), &8, &is_hpc));
+    }
+
+    #[test]
+    fn test_mbeleven() {
+        let kmer1: u64 = 65028; // "TTTGAACA"
+        let kmer2: u64 = 63506; // "TTAGAACA"
+        assert_eq!(2u8, mbleven(&kmer1, &kmer2, &8)?);
     }
 }
 
