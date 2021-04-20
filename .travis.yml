@@ -3,7 +3,7 @@ rust:
 - stable
 - beta
 - nightly
-matrix:
+jobs:
   allow_failures:
   - rust: nightly
   fast_finish: true
@@ -13,16 +13,16 @@ os:
 before_deploy:
   - mv target/release/ccs "target/release/ccs-$TRAVIS_TAG-$TRAVIS_OS_NAME"
 script: 
-  - cargo build --verbose --release
-  - cargo test --verbose
+  - cargo build --release
+  - cargo test
 deploy:
   - provider: releases
-    skip_cleanup: true
+    cleanup: true
     on:
       tags: true
       condition: "$TRAVIS_RUST_VERSION = stable"
       branch: master
     file:
       - target/release/ccs-*
-    api_key:
+    token:
       - ${API_KEY}

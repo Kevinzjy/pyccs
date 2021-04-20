@@ -306,9 +306,9 @@ mod tests {
         let bw: f32 = scott_bw(&x);
 
         let kernel = gaussian_kde(&x, bw);
-        let mut x_max1 = &x[0];
+        let mut _x_max1 = &x[0];
         let mut p_max1 = 0f32;
-        let mut x_max2 = &x[0];
+        let mut _x_max2 = &x[0];
         let mut p_max2 = 0f32;
         for i in &x {
             let pdf1 = kernel.fast_density(*i);
@@ -317,12 +317,12 @@ mod tests {
             // println!("{:?} {:?}", pdf1, pdf2);
 
             if pdf1 > p_max1 {
-                x_max1 = i;
+                _x_max1 = i;
                 p_max1 = pdf1;
             }
 
             if pdf2 > p_max2 {
-                x_max2 = i;
+                _x_max2 = i;
                 p_max2 = pdf2;
             }
         }

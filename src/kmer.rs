@@ -174,7 +174,7 @@ mod tests {
     fn test_kmer() {
         let is_hpc = true;
         let seq = "AAGGTCGATCGAAGCTGATCGATCGATCGTGCTACGTGATGATGCTAGCCTGACTGATCGTAGCAGC";
-        let kmers = iter_kmers(&seq.as_bytes(), &8, &is_hpc);
+        let _ = iter_kmers(&seq.as_bytes(), &8, &is_hpc);
         // for (pos, kmer) in &kmers {
         //     let _kmer = kmer_to_str(kmer, &8);
         //     println!("{:?}", _kmer);
