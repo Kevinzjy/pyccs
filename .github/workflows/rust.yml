@@ -77,14 +77,15 @@ jobs:
 
       - name: Pack binaries if unix
         if: matrix.config.os != 'windows-latest'
-        run: tar -C ./target/${{ matrix.config.target }}/release -czvf jormungandr-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}.tar.gz jormungandr jcli
+        run: mv ./target/release/ccs ./target/release/ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v1-release
         with:
-          repo_token: ${{ secrets.TOKEN }}
-          file: ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}.*
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./target/release/ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}
           asset_name: ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}
           tag: ${{ github.ref }}
+          body: "${{ steps.get_version.outputs.VERSION }"
           file_glob: true
           overwrite: true
