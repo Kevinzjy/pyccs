@@ -3,42 +3,88 @@ name: Rust
 on:
   push:
     tags:
-      - "*"
+      - 'v[0-9]+.*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
-  publish:
-  name: Publish for ${{ matrix.os }}
-  runs-on: ${{ matrix.os }}
-  strategy:
-    matrix:
-      name: [
-        linux,
-        macos
-      ]
-
-      include:
-        - name: linux
-          os: ubuntu-latest
-          artifact_name: target/release/<name>
-          asset_name: <name>-linux
-        - name: macos
-          os: macos-latest
-          artifact_name: target/release/<name>
-          asset_name: <name>-osx
-          
+  initial_release:
+    name: Create base release
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-    
-    - name: Build
-      run: cargo build --release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
 
-    - name: Upload binaries to release
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ matrix.asset_name }}
-        path: ${{ matrix.artifact_name }}
+  release_assets:
+    name: Release assets
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # Linux
+          - {os: ubuntu-latest, toolchain: stable, target: x86_64-unknown-linux-gnu, target_cpu: generic, cross: false}
+          - {os: ubuntu-latest, toolchain: stable, target: x86_64-unknown-linux-gnu, target_cpu: broadwell, cross: false}
+          # - {os: ubuntu-latest, toolchain: stable, target: aarch64-unknown-linux-gnu, target_cpu: generic, cross: true}
+          # - {os: ubuntu-latest, toolchain: stable, target: arm-unknown-linux-gnueabi, target_cpu: generic, cross: true}
+          # - {os: ubuntu-latest, toolchain: stable, target: armv7-unknown-linux-gnueabihf, target_cpu: generic, cross: true}
+          # mips and powerpc are not compitble with ring v0.16.10, so they are disabled for now
+#          - {os: ubuntu-latest, target: mips64el-unknown-linux-gnuabi64, cross: true}
+#          - {os: ubuntu-latest, target: powerpc64le-unknown-linux-gnu, cross: true}
+          # - {os: ubuntu-latest, toolchain: stable,  target: x86_64-unknown-linux-musl, target_cpu: generic, cross: true}
+          # - {os: ubuntu-latest, toolchain: stable,  target: x86_64-unknown-linux-musl, target_cpu: broadwell, cross: true}
+          # - {os: ubuntu-latest, toolchain: stable, target: aarch64-linux-android, target_cpu: generic, cross: true}
+          # Macos
+          # - {os: macos-latest, toolchain: stable, target: x86_64-apple-darwin, target_cpu: generic, cross: false}
+          # - {os: macos-latest, toolchain: stable, target: x86_64-apple-darwin, target_cpu: broadwell, cross: false}
+          # Windows
+          # - {os: windows-latest, toolchain: stable-x86_64-pc-windows-gnu, target: x86_64-pc-windows-gnu, target_cpu: generic, cross: false}
+          # - {os: windows-latest, toolchain: stable-x86_64-pc-windows-msvc, target: x86_64-pc-windows-msvc, target_cpu: generic, cross: false}
+          # - {os: windows-latest, toolchain: stable-x86_64-pc-windows-gnu, target: x86_64-pc-windows-gnu, target_cpu: broadwell, cross: false}
+          # - {os: windows-latest, toolchain: stable-x86_64-pc-windows-msvc, target: x86_64-pc-windows-msvc, target_cpu: broadwell, cross: false}
+    steps:
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.config.toolchain }}
+          target: ${{ matrix.config.target }}
+          override: true
+          default: true
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Build
+        run: cargo build --verbose --release
+
+      - name: Run tests
+        run: cargo test --verbose
+
+      - name: Get tag version
+        id: get_version
+        run: echo ::set-output name=VERSION::``${GITHUB_REF#refs/tags/}``
+        shell: bash
+
+      - name: Pack binaries if unix
+        if: matrix.config.os != 'windows-latest'
+        run: tar -C ./target/${{ matrix.config.target }}/release -czvf jormungandr-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}.tar.gz jormungandr jcli
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}.*
+          asset_name: ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}
+          tag: ${{ github.ref }}
+          file_glob: true
+          overwrite: true
