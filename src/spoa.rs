@@ -120,21 +120,21 @@ mod tests {
 
     }
 
-    #[test]
-    // #[should_panic]
-    fn test_not_null_terminated() {
-        let mut seqs = vec![];
+    // #[test]
+    // // #[should_panic]
+    // fn test_not_null_terminated() {
+    //     let mut seqs = vec![];
 
-        // generated each string by adding small tweaks to the expected consensus "AATGCCCGTT"
-        for seq in ["ATTGCCCGTT",
-            "AATGCCGTT",
-            "AATGCCCGAT",
-            "AACGCCCGTC",
-            "AGTGCTCGTT",
-            "AATGCTCGTT"].iter() {
-            seqs.push((*seq).bytes().map(|x|{x as u8}).collect::<Vec<u8>>());
-        }
+    //     // generated each string by adding small tweaks to the expected consensus "AATGCCCGTT"
+    //     for seq in ["ATTGCCCGTT",
+    //         "AATGCCGTT",
+    //         "AATGCCCGAT",
+    //         "AACGCCCGTC",
+    //         "AGTGCTCGTT",
+    //         "AATGCTCGTT"].iter() {
+    //         seqs.push((*seq).bytes().map(|x|{x as u8}).collect::<Vec<u8>>());
+    //     }
 
-        poa_consensus(&seqs, 1, 5, -4, -3, -1, -3, -1);
-    }
+    //     poa_consensus(&seqs, 1, 5, -4, -3, -1, -3, -1);
+    // }
 }

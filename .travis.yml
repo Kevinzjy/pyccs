@@ -12,7 +12,7 @@ os:
 - linux
 - osx
 before_deploy:
-  - mv target/release/ccs "target/release/ccs-$TRAVIS_TAG-$TRAVIS_OS_NAME"
+  - mv target/release/ccs "target/release/ccs-${TRAVIS_TAG}-${TRAVIS_OS_NAME}"
 script: 
   - cargo build --release
   - cargo test
