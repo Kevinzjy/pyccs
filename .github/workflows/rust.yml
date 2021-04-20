@@ -86,6 +86,6 @@ jobs:
           file: ./target/release/ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}
           asset_name: ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}
           tag: ${{ github.ref }}
-          body: "${{ steps.get_version.outputs.VERSION }"
+          body: "${{ steps.get_version.outputs.VERSION }}"
           file_glob: true
           overwrite: true
