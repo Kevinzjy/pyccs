@@ -18,7 +18,7 @@ script:
   - cargo test
 deploy:
   - provider: releases
-    cleanup: true
+    cleanup: false
     on:
       tags: true
       condition: "$TRAVIS_RUST_VERSION = stable"
