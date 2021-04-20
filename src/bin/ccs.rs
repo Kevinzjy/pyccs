@@ -1,8 +1,10 @@
+use std::path::Path;
+
 use docopt::Docopt;
 use serde::Deserialize;
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 
-use circtools::{scan, logger};
+use circtools::{logger, fasta, fastq};
 
 const PKG_NAME: &'static str = env!("CARGO_PKG_NAME");
 const PKG_VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -45,12 +47,22 @@ fn main() -> Result<()> {
 
     logger::info("Start running");
 
-    let _ = scan::scan_ccs_reads(
-        &args.flag_i,
-        &args.flag_o,
-        &args.flag_r,
-        &args.flag_t
-    )?;
+    let in_file = Path::new(&args.flag_i);
+    if !in_file.exists() {
+        return Err(anyhow!("Input {} does not exist!", &args.flag_i));
+    }
+
+    if args.flag_i.ends_with(".fa") || args.flag_i.ends_with(".fasta") {
+        let _ = fasta::scan_fasta(&args.flag_i, &args.flag_o, &args.flag_r, &args.flag_t)?;
+    } else if args.flag_i.ends_with(".fa.gz") || args.flag_i.ends_with(".fasta.gz") {
+        let _ = fasta::scan_fasta_gz(&args.flag_i, &args.flag_o, &args.flag_r, &args.flag_t)?;
+    } else if args.flag_i.ends_with(".fq") || args.flag_i.ends_with(".fastq") {
+        let _ = fastq::scan_fastq(&args.flag_i, &args.flag_o, &args.flag_r, &args.flag_t)?;
+    } else if args.flag_i.ends_with(".fq.gz") || args.flag_i.ends_with(".fastq.gz") {
+        let _ = fastq::scan_fastq_gz(&args.flag_i, &args.flag_o, &args.flag_r, &args.flag_t)?;
+    } else {
+        return Err(anyhow!("Can't recognize file extension of {}, must be either fa(.gz)/fasta(.gz)/fq(.gz)/fastq(.gz)", &args.flag_i));
+    }
 
     Ok(())
 }

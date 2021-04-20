@@ -21,7 +21,7 @@ pub fn error<T: Display> (info: T) {
 
 fn _logger<T: Display> (level: &str, info: T) {
     let date = Local::now();
-    eprintln!("[{}] |{:5}| - {}", date.format("%a %Y-%m-%d %H:%M:%S"), level, info);
+    eprintln!("[{}] [{:5}] {}", date.format("%a %Y-%m-%d %H:%M:%S"), level, info);
 }
 
 #[cfg(test)]

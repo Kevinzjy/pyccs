@@ -5,7 +5,7 @@ pub fn kmer_to_vec(kmer: &u64, k: &u8) -> Result<Vec<u8>> {
     let mask = 3;
     let mut marker = *kmer;
     let mut bases: Vec<u8> = Vec::with_capacity((*k).into());
-    for i in 0..*k {
+    for _ in 0..*k {
         let c: u8 = match marker & mask {
             0 => 65,
             1 => 67,
@@ -154,17 +154,17 @@ pub fn check_model(
 /// Hash function from minimap2
 /// https://github.com/lh3/minimap2/blob/master/sketch.c
 
-fn hash64(kmer: u64, mask: &u64) -> u64 {
-    let mut key = kmer;
-    key = (!key).wrapping_add(key<<21) & mask;
-    key = key ^ (key >> 24);
-    key = ((key + (key<<3)) + (key<<8)) & mask;
-    key = key ^ (key >> 14);
-    key = ((key + (key<<2)) + (key<<4)) & mask;
-    key = key ^ (key >> 28);
-    key = (key + (key<<31)) & mask;
-    key
-}
+// fn hash64(kmer: u64, mask: &u64) -> u64 {
+//     let mut key = kmer;
+//     key = (!key).wrapping_add(key<<21) & mask;
+//     key = key ^ (key >> 24);
+//     key = ((key + (key<<3)) + (key<<8)) & mask;
+//     key = key ^ (key >> 14);
+//     key = ((key + (key<<2)) + (key<<4)) & mask;
+//     key = key ^ (key >> 28);
+//     key = (key + (key<<31)) & mask;
+//     key
+// }
 
 #[cfg(test)]
 mod tests {
@@ -186,7 +186,7 @@ mod tests {
     fn test_mbeleven() {
         let kmer1: u64 = 65028; // "TTTGAACA"
         let kmer2: u64 = 63506; // "TTAGAACA"
-        assert_eq!(2u8, mbleven(&kmer1, &kmer2, &8)?);
+        assert_eq!(2usize, mbleven(&kmer1, &kmer2, &8).unwrap());
     }
 }
 

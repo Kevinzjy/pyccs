@@ -1,6 +1,6 @@
 [package]
 name = "circtools"
-version = "0.1.1"
+version = "1.0.0"
 authors = ["Kevinzjy <kevinzjy1997@gmail.com>"]
 edition = "2018"
 
@@ -8,13 +8,14 @@ edition = "2018"
 
 [dependencies]
 docopt = "1.1.0"
-needletail = "0.4"
 serde = "1.0"
 anyhow = "1.0"
 chrono = "0.4.19"
 bio = "0.33.0"
 libc = "0.2"
-rayon = "1.5"
+seq_io = "0.3.1"
+flate2 = "1.0.20"
+indicatif = "0.15.0"
 
 [build-dependencies]
 cc = "1.0"

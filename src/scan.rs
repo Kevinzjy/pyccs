@@ -1,90 +1,19 @@
-use std::fs::File;
 use std::cmp::{min, max};
-use std::io::{Write, BufWriter};
 use std::collections::{HashMap, BTreeMap};
 
-use anyhow::{Context, Result, anyhow, bail};
-use needletail::{parse_fastx_file, Sequence};
-use needletail::parser::{SequenceRecord, LineEnding};
+use anyhow::{Result, anyhow};
 use bio::alignment::{pairwise, AlignmentOperation};
-use rayon::prelude::*;
 
 use crate::kmer::{mbleven, split_kmers};
-// use crate::sim::filter_read_id;
-use crate::math::{call_peak, editing_distance, kmer_distance};
+use crate::math::{call_peak, editing_distance};
 use crate::spoa::poa_consensus;
-use crate::logger::info;
 
-pub fn scan_ccs_reads(
-    infile: &str,
-    ccsfile: &str,
-    rawfile: &str,
-    flag_t: &str,
-) -> Result<()> {
-    // Load parameters
-    let mut reader = parse_fastx_file(&infile)
-        .with_context(|| format!("Unvalid input file"))?;
+pub fn find_concensus(
+    seq: &[u8],
+) -> Result<(Vec<(usize, usize)>, String)> {
+    let seq_len = seq.len();
 
-    let ccs_f = File::create(ccsfile)
-        .with_context(|| format!("Unvalid output CCS file"))?;
-    let raw_f = File::create(rawfile)
-        .with_context(|| format!("Unvalid output CCS file"))?;
-
-    let _n_threads = flag_t.parse::<u8>()
-        .with_context(|| format!("Unvalid -t parameters"))?;
-
-    let mut ccs_writer = BufWriter::new(ccs_f);
-    let mut raw_writer = BufWriter::new(raw_f);
-
-    let mut n = 0;
-    let mut n_ccs = 0;
-
-    // let mut input_sequences: Vec<SequenceRecord> = Vec::with_capacity(1000000);
-
-    while let Some(record) = reader.next()  {
-        let seqrec = record.with_context(|| format!("Unvalid sequence record"))?;
-        let seq_id = String::from_utf8(seqrec.id().to_vec()).unwrap();
-
-    // for seqrec in &input_sequences {
-        // let is_circ = filter_read_id(&seq_id);
-        // if !is_circ {
-        //     continue;
-        // }
-
-        n += 1;
-        if n % 1000000 == 0 {
-            info(format!("Loaded {} reads", n));
-        }
-
-        match find_concensus(&seqrec) {
-            Err(e) => continue,
-            Ok(x) => {
-                let ccs_seq = x.1;
-                let mut segments: Vec<String> = Vec::default();
-                for (s, e) in x.0 {
-                    segments.push(String::from(vec![s.to_string(), e.to_string()].join("-")));
-                }
-                let segment_str = segments.join(";");
-
-                // Write reads
-                seqrec.write(&mut raw_writer, Some(LineEnding::Unix)).expect("Failed to output");
-                write!(ccs_writer, ">{}\t{}\t{}\n{}\n", seq_id, segment_str, ccs_seq.len(), ccs_seq);
-            }
-        };
-        n_ccs += 1;
-    }
-    info(format!("{}/{} circular candidate reads", n_ccs, n));
-
-    Ok(())
-}
-
-fn find_concensus(seqrec: &SequenceRecord) -> Result<(Vec<(usize, usize)>, String)> {
-    let seq = seqrec.sequence();
-    let seq_len = seqrec.num_bases();
-    let seq_id = seqrec.id();
-    let read_id = String::from_utf8(seq_id.to_vec()).unwrap();
-
-    if seqrec.num_bases() <= 50 {
+    if seq_len <= 50 {
         return Err(anyhow!("Reads too short"));
     }
 
@@ -92,7 +21,7 @@ fn find_concensus(seqrec: &SequenceRecord) -> Result<(Vec<(usize, usize)>, Strin
     for (k, is_hpc) in &cand_param {
         let tmp_chain = match circular_finder(seq, &k, &is_hpc) {
             Ok(x) => x,
-            Err(e) => continue,
+            Err(_) => continue,
         };
 
         let mut seqs: Vec<Vec<u8>>= Vec::with_capacity(tmp_chain.len());
@@ -133,7 +62,11 @@ fn find_concensus(seqrec: &SequenceRecord) -> Result<(Vec<(usize, usize)>, Strin
     Err(anyhow!("No circular sequence found."))
 }
 
-fn circular_finder(seq: &[u8], k: &u8, is_hpc: &bool) -> Result<Vec<(usize, usize)>> {
+fn circular_finder(
+    seq: &[u8],
+    k: &u8,
+    is_hpc: &bool
+) -> Result<Vec<(usize, usize)>> {
     let p_match = 0.85;
     let p_indel = 0.1;
     let d_min = 40;
@@ -214,7 +147,7 @@ fn estimate_distance(
     } else {
         match call_peak(&tuple_dis, "scott") {
             Ok(x) => d_mean = x,
-            Err(e) => return Ok((0, 0, 0)),
+            Err(_) => return Ok((0, 0, 0)),
         }
     }
     let mut d_support = 0i32;
@@ -325,14 +258,14 @@ fn optimal_chains(
     hits: &BTreeMap::<usize, (usize, usize, usize, usize)>,
 ) -> Result<Vec<(usize, usize, usize)>>{
     let mut init_hit: (usize, usize, usize, usize) = (0, 0, 0, 0);
-    for (i, j) in hits {
+    for (_, j) in hits {
         init_hit = *j;
         break;
     }
 
     let mut chains: Vec<Vec<(usize, usize, usize)>> = Vec::new();
     chains.push(vec![(init_hit.0, init_hit.1, init_hit.3), ]);
-    for (i, j) in hits {
+    for (_, j) in hits {
         let tmp_len1 = chains.len() - 1;
         let tmp_len2 = chains[tmp_len1].len() - 1;
 
@@ -435,7 +368,6 @@ fn split_sequence(
                     AlignmentOperation::Del => {r_shift += 1;},
                     AlignmentOperation::Xclip(n) => {q_shift += n;},
                     AlignmentOperation::Yclip(n) => {r_shift += n;},
-                    _ => {bail!("Unknown alignment operation: {:?}", x);},
                 }
                 if q_shift == last_x - q_s {
                     break;

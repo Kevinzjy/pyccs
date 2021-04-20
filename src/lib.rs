@@ -5,3 +5,6 @@ pub mod sim;
 pub mod math;
 pub mod fastpdf_data;
 pub mod spoa;
+pub mod utils;
+pub mod fasta;
+pub mod fastq;

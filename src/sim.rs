@@ -27,17 +27,17 @@
 
 pub fn filter_read_id(read_id: &str) -> bool {
     let id_vec: Vec<&str> = read_id.split("|").collect();
-    let tscp_id = id_vec[0];
-    let gene_id = id_vec[1];
-    let circ_id = id_vec[2];
-    let strand = id_vec[3];
+    let _tscp_id = id_vec[0];
+    let _gene_id = id_vec[1];
+    let _circ_id = id_vec[2];
+    let _strand = id_vec[3];
     let attr = id_vec[4];
     let attr_vec: Vec<&str> = attr.split("_").collect();
     let circ_len: u32 = attr_vec[0].parse::<u32>().unwrap();
-    let st: u32 = attr_vec[1].parse::<u32>().unwrap();
+    let _st: u32 = attr_vec[1].parse::<u32>().unwrap();
     let is_aligned = attr_vec[2];
-    let idx = attr_vec[3];
-    let direction = attr_vec[4];
+    let _idx = attr_vec[3];
+    let _direction = attr_vec[4];
     let head: u32 = attr_vec[5].parse::<u32>().unwrap();
     let middle: u32 = attr_vec[6].parse::<u32>().unwrap();
     let tail: u32 = attr_vec[7].parse::<u32>().unwrap();

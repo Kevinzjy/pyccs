@@ -108,7 +108,7 @@ pub fn fast_peak(x: &[i32]) -> Result<i32> {
 
     // Merge intervals
     let mut delta = 5i32;
-    while true {
+    loop {
         let mut last_s = 0i32;
         let mut last_e = 0i32;
         let mut last_f = 0i32;
@@ -263,10 +263,10 @@ pub fn editing_distance(seq1: &Vec<u8>, seq2: &Vec<u8>) -> Result<usize> {
         for j in 0..seq2.len() {
             let cb = seq2[j];
             tmp = cur[j + 1];
-            cur[j + 1] = std::cmp::min(
+            cur[j + 1] = min(
                 // deletion
                 tmp + 1,
-                std::cmp::min(
+                min(
                     // insertion
                     cur[j] + 1,
                     // match or substitution
