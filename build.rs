@@ -22,6 +22,7 @@ fn main() {
         .flag_if_supported("-O3")
         .flag_if_supported("-D_GNU_SOURCE")
         .flag_if_supported("-Wall")
+        .flag_if_supported("-fPIC")
         .flag_if_supported("-std=c++11")
         .flag_if_supported("-Ivendor/spoa/include")
         .flag_if_supported(&format!("-L{}/lib64 -L{}/lib", &out_dir, &out_dir))

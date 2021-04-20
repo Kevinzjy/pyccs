@@ -44,4 +44,3 @@ The process should be finished within ~1min.
 cp ./target/release/ccs your/path
 export PATH=your/path:$PATH
 ```
-
