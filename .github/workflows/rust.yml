@@ -32,20 +32,20 @@ jobs:
       matrix:
         config:
           # Linux
-          - {os: ubuntu-latest, toolchain: stable, target: x86_64-unknown-linux-gnu, target_cpu: generic, cross: false}
-          - {os: ubuntu-latest, toolchain: stable, target: x86_64-unknown-linux-gnu, target_cpu: broadwell, cross: false}
+          - {os: ubuntu-16.04, toolchain: stable, target: x86_64-unknown-linux-gnu, target_cpu: generic, cross: false}
+          # - {os: ubuntu-16.04, toolchain: stable, target: x86_64-unknown-linux-gnu, target_cpu: broadwell, cross: false}
           # - {os: ubuntu-latest, toolchain: stable, target: aarch64-unknown-linux-gnu, target_cpu: generic, cross: true}
           # - {os: ubuntu-latest, toolchain: stable, target: arm-unknown-linux-gnueabi, target_cpu: generic, cross: true}
           # - {os: ubuntu-latest, toolchain: stable, target: armv7-unknown-linux-gnueabihf, target_cpu: generic, cross: true}
           # mips and powerpc are not compitble with ring v0.16.10, so they are disabled for now
-#          - {os: ubuntu-latest, target: mips64el-unknown-linux-gnuabi64, cross: true}
-#          - {os: ubuntu-latest, target: powerpc64le-unknown-linux-gnu, cross: true}
+          # - {os: ubuntu-latest, target: mips64el-unknown-linux-gnuabi64, cross: true}
+          # - {os: ubuntu-latest, target: powerpc64le-unknown-linux-gnu, cross: true}
           # - {os: ubuntu-latest, toolchain: stable,  target: x86_64-unknown-linux-musl, target_cpu: generic, cross: true}
           # - {os: ubuntu-latest, toolchain: stable,  target: x86_64-unknown-linux-musl, target_cpu: broadwell, cross: true}
           # - {os: ubuntu-latest, toolchain: stable, target: aarch64-linux-android, target_cpu: generic, cross: true}
           # Macos
-          # - {os: macos-latest, toolchain: stable, target: x86_64-apple-darwin, target_cpu: generic, cross: false}
-          # - {os: macos-latest, toolchain: stable, target: x86_64-apple-darwin, target_cpu: broadwell, cross: false}
+          - {os: macos-10.15, toolchain: stable, target: x86_64-apple-darwin, target_cpu: generic, cross: false}
+          # - {os: macos-10.15, toolchain: stable, target: x86_64-apple-darwin, target_cpu: broadwell, cross: false}
           # Windows
           # - {os: windows-latest, toolchain: stable-x86_64-pc-windows-gnu, target: x86_64-pc-windows-gnu, target_cpu: generic, cross: false}
           # - {os: windows-latest, toolchain: stable-x86_64-pc-windows-msvc, target: x86_64-pc-windows-msvc, target_cpu: generic, cross: false}
@@ -77,15 +77,15 @@ jobs:
 
       - name: Pack binaries if unix
         if: matrix.config.os != 'windows-latest'
-        run: mv ./target/release/ccs ./target/release/ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}
+        run: mv ./target/release/ccs ./target/release/ccs_${{ steps.get_version.outputs.VERSION }}_${{ matrix.config.target }}_${{ matrix.config.target_cpu }}
 
       - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v1-release
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./target/release/ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}
-          asset_name: ccs-${{ steps.get_version.outputs.VERSION }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}
+          file: ./target/release/ccs_${{ steps.get_version.outputs.VERSION }}_${{ matrix.config.target }}_${{ matrix.config.target_cpu }}
+          asset_name: ccs_${{ steps.get_version.outputs.VERSION }}_${{ matrix.config.target }}_${{ matrix.config.target_cpu }}
           tag: ${{ github.ref }}
-          body: "${{ steps.get_version.outputs.VERSION }}"
+          body: "Update ${{ steps.get_version.outputs.VERSION }}"
           file_glob: true
           overwrite: true
