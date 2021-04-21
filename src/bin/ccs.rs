@@ -12,9 +12,9 @@ const USAGE: &'static str = "
 ccs (scan for circular consensus sequence)
 
 Usage:
-  circtools [options] -i FASTX -o FASTX -r FASTX
-  circtools (-h | --help)
-  circtools --version
+  ccs [options] -i FASTX -o FASTX -r FASTX
+  ccs (-h | --help)
+  ccs --version
 
 Options:
   -i FILE       Input file (fasta/fastq)
