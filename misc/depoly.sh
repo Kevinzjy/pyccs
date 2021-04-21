@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install on CentOS 7 with glibc 2.17
 
 # Install dependencies
 strings /lib64/libc.so.6 | grep -P "^GLIBC"
@@ -25,6 +26,7 @@ curl https://sh.rustup.rs -sSf | sh
 git clone --recursive https://github.com/Kevinzjy/circtools.git
 cd circtools
 cargo build --release
+mv ./target/release/ccs ./target/release/ccs_v1.0.0_el7.x86-64
 
 # RUSTFLAGS=-g cargo build --release
 # cargo build --release
