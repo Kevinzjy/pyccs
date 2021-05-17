@@ -2,7 +2,7 @@ use std::fs::File;
 use std::path::Path;
 use std::io::{Write, BufWriter, BufReader};
 
-use indicatif::{ProgressBar, ProgressStyle};
+use indicatif::{ProgressBar, ProgressStyle, ProgressDrawTarget};
 use anyhow::{Context, Result, anyhow};
 use flate2::read::MultiGzDecoder;
 use seq_io::fasta::Record;
@@ -114,6 +114,8 @@ pub fn scan_fasta(
     bar.set_style(ProgressStyle::default_bar()
         .template("[{elapsed_precise}] [{bar:40./}] {pos:>7}/{len:7} ({eta})")
         .progress_chars("#>-"));
+    bar.set_draw_target(ProgressDrawTarget::stderr());
+
     let mut total_ccs = 0u64;
     read_parallel(reader, n_threads, n_threads as usize, |record_set| {
         let mut chunk_n = 0u64;
@@ -209,6 +211,8 @@ pub fn scan_fasta_gz(
     bar.set_style(ProgressStyle::default_bar()
         .template("[{elapsed_precise}] [{bar:40./}] {pos:>7}/{len:7} ({eta})")
         .progress_chars("#>-"));
+    bar.set_draw_target(ProgressDrawTarget::stderr());
+
     let mut total_ccs = 0u64;
     read_parallel(reader, n_threads, n_threads as usize, |record_set| {
         let mut chunk_n = 0u64;
