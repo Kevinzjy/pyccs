@@ -79,3 +79,7 @@ docs/_build/
 
 # Pyenv
 .python-version
+
+# Entry point
+!src/bin
+!src/bin/*
