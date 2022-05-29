@@ -1,21 +1,20 @@
 FROM quay.io/pypa/manylinux2010_x86_64:latest
 RUN yum -y update && \
     yum -y groupinstall "Development Tools" && \
-    yum -y install wget git openssl-devel openssh-client
-# RUN mkdir /rust
-# WORKDIR /rust
-# RUN wget https://github.com/Kitware/CMake/releases/download/v3.20.1/cmake-3.20.1.tar.gz \
-#     && tar zxvf cmake-3.20.1.tar.gz \
-#     && cd cmake-3.20.1 \
-#     && ./configure \
-#     && gmake -j16 \
-#     && make -j16 install
-# RUN wget http://zlib.net/zlib-1.2.11.tar.gz \
-#     && tar zxvf zlib-1.2.11.tar.gz \
-#     && cd zlib-1.2.11 \
-#     && ./configure \
-#     && make -j16 \
-#     && make -j16 install
+    yum -y install wget git openssl-devel openssh-client 
+WORKDIR /tmp
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.20.1/cmake-3.20.1.tar.gz \
+    && tar zxvf cmake-3.20.1.tar.gz \
+    && cd cmake-3.20.1 \
+    && ./configure \
+    && gmake -j16 \
+    && make -j16 install
+RUN wget https://zlib.net/fossils/zlib-1.2.11.tar.gz \
+    && tar zxvf zlib-1.2.11.tar.gz \
+    && cd zlib-1.2.11 \
+    && ./configure \
+    && make -j16 \
+    && make -j16 install
 
 # RUN useradd rust --user-group --create-home --shell /bin/bash --groups wheel \
 #     && echo "rust ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers

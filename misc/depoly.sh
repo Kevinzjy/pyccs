@@ -30,7 +30,11 @@ podman run -v \
   -w /volume \
   --network host \
   --rm \
-  -t localhost/manylinux2010_x86_64_rust:v1 sh ./misc/build-wheels.sh 
+  -i \
+  -t localhost/manylinux2010_x86_64_rust:v1 
+  sh ./misc/build-wheels.sh 
 
+
+  -i \
 
   --userns keep-id \
