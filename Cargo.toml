@@ -4,9 +4,6 @@ version = "1.1.0"
 authors = ["Jinyang Zhang <zhangjinyang@biols.ac.cn"]
 edition = "2021"
 
-[package.metadata.maturin]
-project-url = { homepage = "https://github.com/Kevinzjy/pyccs" }
-
 # [workspace]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -31,10 +28,3 @@ flate2 = "1.0.20"
 indicatif = "0.15.0"
 pyo3 = { version = "0.16.5", features = ["extension-module", "anyhow"] }
 rust-spoa = { git = "https://github.com/Kevinzjy/rust-spoa" }
-
-# [build-dependencies]
-# cc = "1.0"
-# cmake = "0.1"
-
-[features]
-static = []

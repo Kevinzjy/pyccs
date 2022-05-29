@@ -31,6 +31,7 @@ jobs:
 
      - name: Build bin
        run: |
+         source $HOME/.cargo/env
          bash .github/workflows/build-bin.sh
 
      - uses: actions/upload-artifact@v1
