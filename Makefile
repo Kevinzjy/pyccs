@@ -25,13 +25,13 @@ develop:
 
 lib:
 	pip install maturin
-	maturin build --interpreter python
+	maturin build --interpreter python --release
 
 install:
 	pip install ./target/wheels/pyccs-*-cp39-cp39-manylinux_2_28_x86_64.whl --force-reinstall
 
 bin:
-	maturin build --interpreter python -b bin
+	maturin build --interpreter python --release -b bin
 
 uninstall:
 	pip uninstall pyccs

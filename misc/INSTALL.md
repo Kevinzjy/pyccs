@@ -21,12 +21,9 @@ podman run -v \
   --rm \
   -t kevinzjy/manylinux2010_x86_64_rust:v1 sh ./misc/build-wheels.sh
 
-
-# 
+# Commit
 git add --all .
 git commit -m "message"
-git tag -d v1.1.0
-git tag v1.1.0
+git tag -d v1.1.0 && git tag v1.1.0
 git push --tags --force
-
 ```

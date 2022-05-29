@@ -22,10 +22,20 @@ jobs:
          source $HOME/.cargo/env
          rustup default stable
          bash .github/workflows/build-wheels.sh
-     - uses: actions/upload-artifact@v1
+
+     - uses: actions/upload-artifact@v3
        with:
          name: linux-wheels
          path: wheelhouse/
+
+     - uses: actions/checkout@v1
+     - name: Build bin
+       run: |
+         bash .github/workflows/build-bin.sh
+     - uses: actions/upload-artifact@v3
+       with:
+         name: linux-binary
+         path: target/release/ccs
 
   # osx-wheels:
   #   runs-on: macos-latest
