@@ -1,13 +1,13 @@
 #!/bin/bash
-git clone --recursive https://github.com/Kevinzjy/circtools.git
-cd circtools/misc
+git clone --recursive https://github.com/Kevinzjy/pyccs.git
+cd pyccs/misc
 
 podman build -t centos7_rust:v1 ./
 
 setproxy
 
 podman run -v \
-  /home/zhangjy/data/git/circtools:/volume:z \
+  /home/zhangjy/data/git/pyccs:/volume:z \
   -w /volume \
   --userns keep-id \
   --network host \
