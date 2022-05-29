@@ -23,7 +23,7 @@ jobs:
          rustup default stable
          bash .github/workflows/build-wheels.sh
 
-     - uses: actions/upload-artifact@v3
+     - uses: actions/upload-artifact@v1
        with:
          name: linux-wheels
          path: wheelhouse/
@@ -32,7 +32,7 @@ jobs:
      - name: Build bin
        run: |
          bash .github/workflows/build-bin.sh
-     - uses: actions/upload-artifact@v3
+     - uses: actions/upload-artifact@v1
        with:
          name: linux-binary
          path: target/release/ccs

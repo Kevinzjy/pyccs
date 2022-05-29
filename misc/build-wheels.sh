@@ -20,8 +20,3 @@ done
 for wheel in target/wheels/*.whl; do
     auditwheel repair "${wheel}"
 done
-
-ls /wheelhouse/*.whl
-# mv /wheelhouse/*.whl /volume/target/wheels
-
-#  ENV PATH=/home/rust/.cargo/bin:/opt/cross/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
