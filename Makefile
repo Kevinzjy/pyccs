@@ -42,4 +42,4 @@ test:
 	# cargo test -- --nocapture
 
 deploy_test:
-	maturin publish -r https://test.pypi.org/legacy/
+	maturin publish --interpreter python -r https://test.pypi.org/legacy/

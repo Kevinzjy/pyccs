@@ -27,5 +27,6 @@ classifiers = [
 
 [project.urls]
 hompage = "https://github.com/Kevinzjy/pyccs"
+documentation = "https://github.com/Kevinzjy/pyccs"
 repository = "github.com"
 changelog = "github.com/Kevinzjy/pyccs/CHANGELOG.md"

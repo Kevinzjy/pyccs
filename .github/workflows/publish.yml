@@ -16,6 +16,7 @@ jobs:
     container: kevinzjy/manylinux2010_x86_64_rust:v1
     steps:
      - uses: actions/checkout@v1
+     
      - name: Build wheels
        run: |
          curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -28,10 +29,10 @@ jobs:
          name: linux-wheels
          path: wheelhouse/
 
-     - uses: actions/checkout@v1
      - name: Build bin
        run: |
          bash .github/workflows/build-bin.sh
+
      - uses: actions/upload-artifact@v1
        with:
          name: linux-binary

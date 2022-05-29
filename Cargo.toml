@@ -4,6 +4,9 @@ version = "1.1.0"
 authors = ["Jinyang Zhang <zhangjinyang@biols.ac.cn"]
 edition = "2021"
 
+[package.metadata.maturin]
+project-url = { homepage = "https://github.com/Kevinzjy/pyccs" }
+
 # [workspace]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
