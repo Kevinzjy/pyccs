@@ -1,0 +1,933 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Configuration - The Cargo Book</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div id="sidebar-scrollbox" class="sidebar-scrollbox">
+                <ol class="chapter"><li class="expanded affix "><a href="../index.html">Introduction</a></li><li class="expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="expanded "><a href="../getting-started/installation.html"><strong aria-hidden="true">1.1.</strong> Installation</a></li><li class="expanded "><a href="../getting-started/first-steps.html"><strong aria-hidden="true">1.2.</strong> First Steps with Cargo</a></li></ol></li><li class="expanded "><a href="../guide/index.html"><strong aria-hidden="true">2.</strong> Cargo Guide</a></li><li><ol class="section"><li class="expanded "><a href="../guide/why-cargo-exists.html"><strong aria-hidden="true">2.1.</strong> Why Cargo Exists</a></li><li class="expanded "><a href="../guide/creating-a-new-project.html"><strong aria-hidden="true">2.2.</strong> Creating a New Package</a></li><li class="expanded "><a href="../guide/working-on-an-existing-project.html"><strong aria-hidden="true">2.3.</strong> Working on an Existing Package</a></li><li class="expanded "><a href="../guide/dependencies.html"><strong aria-hidden="true">2.4.</strong> Dependencies</a></li><li class="expanded "><a href="../guide/project-layout.html"><strong aria-hidden="true">2.5.</strong> Package Layout</a></li><li class="expanded "><a href="../guide/cargo-toml-vs-cargo-lock.html"><strong aria-hidden="true">2.6.</strong> Cargo.toml vs Cargo.lock</a></li><li class="expanded "><a href="../guide/tests.html"><strong aria-hidden="true">2.7.</strong> Tests</a></li><li class="expanded "><a href="../guide/continuous-integration.html"><strong aria-hidden="true">2.8.</strong> Continuous Integration</a></li><li class="expanded "><a href="../guide/cargo-home.html"><strong aria-hidden="true">2.9.</strong> Cargo Home</a></li><li class="expanded "><a href="../guide/build-cache.html"><strong aria-hidden="true">2.10.</strong> Build Cache</a></li></ol></li><li class="expanded "><a href="../reference/index.html"><strong aria-hidden="true">3.</strong> Cargo Reference</a></li><li><ol class="section"><li class="expanded "><a href="../reference/specifying-dependencies.html"><strong aria-hidden="true">3.1.</strong> Specifying Dependencies</a></li><li class="expanded "><a href="../reference/manifest.html"><strong aria-hidden="true">3.2.</strong> The Manifest Format</a></li><li class="expanded "><a href="../reference/profiles.html"><strong aria-hidden="true">3.3.</strong> Profiles</a></li><li class="expanded "><a href="../reference/config.html" class="active"><strong aria-hidden="true">3.4.</strong> Configuration</a></li><li class="expanded "><a href="../reference/environment-variables.html"><strong aria-hidden="true">3.5.</strong> Environment Variables</a></li><li class="expanded "><a href="../reference/build-scripts.html"><strong aria-hidden="true">3.6.</strong> Build Scripts</a></li><li><ol class="section"><li class="expanded "><a href="../reference/build-script-examples.html"><strong aria-hidden="true">3.6.1.</strong> Build Script Examples</a></li></ol></li><li class="expanded "><a href="../reference/publishing.html"><strong aria-hidden="true">3.7.</strong> Publishing on crates.io</a></li><li class="expanded "><a href="../reference/pkgid-spec.html"><strong aria-hidden="true">3.8.</strong> Package ID Specifications</a></li><li class="expanded "><a href="../reference/source-replacement.html"><strong aria-hidden="true">3.9.</strong> Source Replacement</a></li><li class="expanded "><a href="../reference/external-tools.html"><strong aria-hidden="true">3.10.</strong> External Tools</a></li><li class="expanded "><a href="../reference/registries.html"><strong aria-hidden="true">3.11.</strong> Registries</a></li><li class="expanded "><a href="../reference/unstable.html"><strong aria-hidden="true">3.12.</strong> Unstable Features</a></li></ol></li><li class="expanded "><a href="../commands/index.html"><strong aria-hidden="true">4.</strong> Cargo Commands</a></li><li><ol class="section"><li class="expanded "><a href="../commands/build-commands.html"><strong aria-hidden="true">4.1.</strong> Build Commands</a></li><li><ol class="section"><li class="expanded "><a href="../commands/cargo-bench.html"><strong aria-hidden="true">4.1.1.</strong> bench</a></li><li class="expanded "><a href="../commands/cargo-build.html"><strong aria-hidden="true">4.1.2.</strong> build</a></li><li class="expanded "><a href="../commands/cargo-check.html"><strong aria-hidden="true">4.1.3.</strong> check</a></li><li class="expanded "><a href="../commands/cargo-clean.html"><strong aria-hidden="true">4.1.4.</strong> clean</a></li><li class="expanded "><a href="../commands/cargo-doc.html"><strong aria-hidden="true">4.1.5.</strong> doc</a></li><li class="expanded "><a href="../commands/cargo-fetch.html"><strong aria-hidden="true">4.1.6.</strong> fetch</a></li><li class="expanded "><a href="../commands/cargo-fix.html"><strong aria-hidden="true">4.1.7.</strong> fix</a></li><li class="expanded "><a href="../commands/cargo-run.html"><strong aria-hidden="true">4.1.8.</strong> run</a></li><li class="expanded "><a href="../commands/cargo-rustc.html"><strong aria-hidden="true">4.1.9.</strong> rustc</a></li><li class="expanded "><a href="../commands/cargo-rustdoc.html"><strong aria-hidden="true">4.1.10.</strong> rustdoc</a></li><li class="expanded "><a href="../commands/cargo-test.html"><strong aria-hidden="true">4.1.11.</strong> test</a></li></ol></li><li class="expanded "><a href="../commands/manifest-commands.html"><strong aria-hidden="true">4.2.</strong> Manifest Commands</a></li><li><ol class="section"><li class="expanded "><a href="../commands/cargo-generate-lockfile.html"><strong aria-hidden="true">4.2.1.</strong> generate-lockfile</a></li><li class="expanded "><a href="../commands/cargo-locate-project.html"><strong aria-hidden="true">4.2.2.</strong> locate-project</a></li><li class="expanded "><a href="../commands/cargo-metadata.html"><strong aria-hidden="true">4.2.3.</strong> metadata</a></li><li class="expanded "><a href="../commands/cargo-pkgid.html"><strong aria-hidden="true">4.2.4.</strong> pkgid</a></li><li class="expanded "><a href="../commands/cargo-update.html"><strong aria-hidden="true">4.2.5.</strong> update</a></li><li class="expanded "><a href="../commands/cargo-vendor.html"><strong aria-hidden="true">4.2.6.</strong> vendor</a></li><li class="expanded "><a href="../commands/cargo-verify-project.html"><strong aria-hidden="true">4.2.7.</strong> verify-project</a></li></ol></li><li class="expanded "><a href="../commands/package-commands.html"><strong aria-hidden="true">4.3.</strong> Package Commands</a></li><li><ol class="section"><li class="expanded "><a href="../commands/cargo-init.html"><strong aria-hidden="true">4.3.1.</strong> init</a></li><li class="expanded "><a href="../commands/cargo-install.html"><strong aria-hidden="true">4.3.2.</strong> install</a></li><li class="expanded "><a href="../commands/cargo-new.html"><strong aria-hidden="true">4.3.3.</strong> new</a></li><li class="expanded "><a href="../commands/cargo-search.html"><strong aria-hidden="true">4.3.4.</strong> search</a></li><li class="expanded "><a href="../commands/cargo-uninstall.html"><strong aria-hidden="true">4.3.5.</strong> uninstall</a></li></ol></li><li class="expanded "><a href="../commands/publishing-commands.html"><strong aria-hidden="true">4.4.</strong> Publishing Commands</a></li><li><ol class="section"><li class="expanded "><a href="../commands/cargo-login.html"><strong aria-hidden="true">4.4.1.</strong> login</a></li><li class="expanded "><a href="../commands/cargo-owner.html"><strong aria-hidden="true">4.4.2.</strong> owner</a></li><li class="expanded "><a href="../commands/cargo-package.html"><strong aria-hidden="true">4.4.3.</strong> package</a></li><li class="expanded "><a href="../commands/cargo-publish.html"><strong aria-hidden="true">4.4.4.</strong> publish</a></li><li class="expanded "><a href="../commands/cargo-yank.html"><strong aria-hidden="true">4.4.5.</strong> yank</a></li></ol></li><li class="expanded "><a href="../commands/general-commands.html"><strong aria-hidden="true">4.5.</strong> General Commands</a></li><li><ol class="section"><li class="expanded "><a href="../commands/cargo-help.html"><strong aria-hidden="true">4.5.1.</strong> help</a></li><li class="expanded "><a href="../commands/cargo-version.html"><strong aria-hidden="true">4.5.2.</strong> version</a></li></ol></li></ol></li><li class="expanded "><a href="../faq.html"><strong aria-hidden="true">5.</strong> FAQ</a></li><li class="expanded "><a href="../appendix/glossary.html"><strong aria-hidden="true">6.</strong> Appendix: Glossary</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">The Cargo Book</h1>
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                            <a href="https://github.com/rust-lang/cargo/tree/master/src/doc/src" title="Git repository" aria-label="Git repository">
+                                <i id="git-repository-button" class="fa fa-github"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2><a class="header" href="#configuration" id="configuration">Configuration</a></h2>
+<p>This document explains how Cargo’s configuration system works, as well as
+available keys or configuration. For configuration of a package through its
+manifest, see the <a href="manifest.html">manifest format</a>.</p>
+<h3><a class="header" href="#hierarchical-structure" id="hierarchical-structure">Hierarchical structure</a></h3>
+<p>Cargo allows local configuration for a particular package as well as global
+configuration. It looks for configuration files in the current directory and
+all parent directories. If, for example, Cargo were invoked in
+<code>/projects/foo/bar/baz</code>, then the following configuration files would be
+probed for and unified in this order:</p>
+<ul>
+<li><code>/projects/foo/bar/baz/.cargo/config</code></li>
+<li><code>/projects/foo/bar/.cargo/config</code></li>
+<li><code>/projects/foo/.cargo/config</code></li>
+<li><code>/projects/.cargo/config</code></li>
+<li><code>/.cargo/config</code></li>
+<li><code>$CARGO_HOME/config</code> which defaults to:
+<ul>
+<li>Windows: <code>%USERPROFILE%\.cargo\config</code></li>
+<li>Unix: <code>$HOME/.cargo/config</code></li>
+</ul>
+</li>
+</ul>
+<p>With this structure, you can specify configuration per-package, and even
+possibly check it into version control. You can also specify personal defaults
+with a configuration file in your home directory.</p>
+<p>If a key is specified in multiple config files, the values will get merged
+together. Numbers, strings, and booleans will use the value in the deeper
+config directory taking precedence over ancestor directories, where the
+home directory is the lowest priority. Arrays will be joined together.</p>
+<h3><a class="header" href="#configuration-format" id="configuration-format">Configuration format</a></h3>
+<p>Configuration files are written in the <a href="https://github.com/toml-lang/toml">TOML format</a> (like the
+manifest), with simple key-value pairs inside of sections (tables). The
+following is a quick overview of all settings, with detailed descriptions
+found below.</p>
+<pre><code class="language-toml">paths = [&quot;/path/to/override&quot;] # path dependency overrides
+
+[alias]     # command aliases
+b = &quot;build&quot;
+c = &quot;check&quot;
+t = &quot;test&quot;
+r = &quot;run&quot;
+rr = &quot;run --release&quot;
+space_example = [&quot;run&quot;, &quot;--release&quot;, &quot;--&quot;, &quot;\&quot;command list\&quot;&quot;]
+
+[build]
+jobs = 1                  # number of parallel jobs, defaults to # of CPUs
+rustc = &quot;rustc&quot;           # the rust compiler tool
+rustc-wrapper = &quot;…&quot;       # run this wrapper instead of `rustc`
+rustdoc = &quot;rustdoc&quot;       # the doc generator tool
+target = &quot;triple&quot;         # build for the target triple (ignored by `cargo install`)
+target-dir = &quot;target&quot;     # path of where to place all generated artifacts
+rustflags = [&quot;…&quot;, &quot;…&quot;]    # custom flags to pass to all compiler invocations
+rustdocflags = [&quot;…&quot;, &quot;…&quot;] # custom flags to pass to rustdoc
+incremental = true        # whether or not to enable incremental compilation
+dep-info-basedir = &quot;…&quot;    # path for the base directory for targets in depfiles
+pipelining = true         # rustc pipelining
+
+[cargo-new]
+name = &quot;Your Name&quot;        # name to use in `authors` field
+email = &quot;you@example.com&quot; # email address to use in `authors` field
+vcs = &quot;none&quot;              # VCS to use ('git', 'hg', 'pijul', 'fossil', 'none')
+
+[http]
+debug = false               # HTTP debugging
+proxy = &quot;host:port&quot;         # HTTP proxy in libcurl format
+ssl-version = &quot;tlsv1.3&quot;     # TLS version to use
+ssl-version.max = &quot;tlsv1.3&quot; # maximum TLS version
+ssl-version.min = &quot;tlsv1.1&quot; # minimum TLS version
+timeout = 30                # timeout for each HTTP request, in seconds
+low-speed-limit = 10        # network timeout threshold (bytes/sec)
+cainfo = &quot;cert.pem&quot;         # path to Certificate Authority (CA) bundle
+check-revoke = true         # check for SSL certificate revocation
+multiplexing = true         # HTTP/2 multiplexing
+user-agent = &quot;…&quot;            # the user-agent header
+
+[install]
+root = &quot;/some/path&quot;         # `cargo install` destination directory
+
+[net]
+retry = 2                   # network retries
+git-fetch-with-cli = true   # use the `git` executable for git operations
+offline = false             # do not access the network
+
+[registries.&lt;name&gt;]  # registries other than crates.io
+index = &quot;…&quot;          # URL of the registry index
+token = &quot;…&quot;          # authentication token for the registry
+
+[registry]
+default = &quot;…&quot;        # name of the default registry
+token = &quot;…&quot;          # authentication token for crates.io
+
+[source.&lt;name&gt;]      # source definition and replacement
+replace-with = &quot;…&quot;   # replace this source with the given named source
+directory = &quot;…&quot;      # path to a directory source
+registry = &quot;…&quot;       # URL to a registry source
+local-registry = &quot;…&quot; # path to a local registry source
+git = &quot;…&quot;            # URL of a git repository source
+branch = &quot;…&quot;         # branch name for the git repository
+tag = &quot;…&quot;            # tag name for the git repository
+rev = &quot;…&quot;            # revision for the git repository
+
+[target.&lt;triple&gt;]
+linker = &quot;…&quot;            # linker to use
+runner = &quot;…&quot;            # wrapper to run executables
+rustflags = [&quot;…&quot;, &quot;…&quot;]  # custom flags for `rustc`
+
+[target.&lt;cfg&gt;]
+runner = &quot;…&quot;            # wrapper to run executables
+rustflags = [&quot;…&quot;, &quot;…&quot;]  # custom flags for `rustc`
+
+[target.&lt;triple&gt;.&lt;links&gt;] # `links` build script override
+rustc-link-lib = [&quot;foo&quot;]
+rustc-link-search = [&quot;/path/to/foo&quot;]
+rustc-flags = [&quot;-L&quot;, &quot;/some/path&quot;]
+rustc-cfg = ['key=&quot;value&quot;']
+rustc-env = {key = &quot;value&quot;}
+rustc-cdylib-link-arg = [&quot;…&quot;]
+metadata_key1 = &quot;value&quot;
+metadata_key2 = &quot;value&quot;
+
+[term]
+verbose = false        # whether cargo provides verbose output
+color = 'auto'         # whether cargo colorizes output
+</code></pre>
+<h3><a class="header" href="#environment-variables" id="environment-variables">Environment variables</a></h3>
+<p>Cargo can also be configured through environment variables in addition to the
+TOML configuration files. For each configuration key of the form <code>foo.bar</code> the
+environment variable <code>CARGO_FOO_BAR</code> can also be used to define the value.
+Keys are converted to uppercase, dots and dashes are converted to underscores.
+For example the <code>target.x86_64-unknown-linux-gnu.runner</code> key can also be
+defined by the <code>CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUNNER</code> environment
+variable.</p>
+<p>Environment variables will take precedence over TOML configuration files.
+Currently only integer, boolean, string and some array values are supported to
+be defined by environment variables. Descriptions below indicate which keys
+support environment variables.</p>
+<p>In addition to the system above, Cargo recognizes a few other specific
+<a href="environment-variables.html">environment variables</a>.</p>
+<h3><a class="header" href="#config-relative-paths" id="config-relative-paths">Config-relative paths</a></h3>
+<p>Paths in config files may be absolute, relative, or a bare name without any
+path separators. Paths for executables without a path separator will use the
+<code>PATH</code> environment variable to search for the executable. Paths for
+non-executables will be relative to where the config value is defined. For
+config files, that is relative to the parent directory of the <code>.cargo</code>
+directory where the value was defined. For environment variables it is
+relative to the current working directory.</p>
+<pre><code class="language-toml"># Relative path examples.
+
+[target.x86_64-unknown-linux-gnu]
+runner = &quot;foo&quot;  # Searches `PATH` for `foo`.
+
+[source.vendored-sources]
+# Directory is relative to the parent where `.cargo/config` is located.
+# For example, `/my/project/.cargo/config` would result in `/my/project/vendor`.
+directory = &quot;vendor&quot;
+</code></pre>
+<h3><a class="header" href="#credentials" id="credentials">Credentials</a></h3>
+<p>Configuration values with sensitive information are stored in the
+<code>$CARGO_HOME/credentials</code> file. This file is automatically created and updated
+by <a href="../commands/cargo-login.html"><code>cargo login</code></a>. It follows the same format as Cargo config files.</p>
+<pre><code class="language-toml">[registry]
+token = &quot;…&quot;   # Access token for crates.io
+
+[registries.&lt;name&gt;]
+token = &quot;…&quot;   # Access token for the named registry
+</code></pre>
+<p>Tokens are used by some Cargo commands such as <a href="../commands/cargo-publish.html"><code>cargo publish</code></a> for
+authenticating with remote registries. Care should be taken to protect the
+tokens and to keep them secret.</p>
+<p>As with most other config values, tokens may be specified with environment
+variables. The token for <a href="https://crates.io/">crates.io</a> may be specified with the
+<code>CARGO_REGISTRY_TOKEN</code> environment variable. Tokens for other registries may
+be specified with environment variables of the form
+<code>CARGO_REGISTRIES_&lt;name&gt;_TOKEN</code> where <code>&lt;name&gt;</code> is the name of the registry in
+all capital letters.</p>
+<h3><a class="header" href="#configuration-keys" id="configuration-keys">Configuration keys</a></h3>
+<p>This section documents all configuration keys. The description for keys with
+variable parts are annotated with angled brackets like <code>target.&lt;triple&gt;</code> where
+the <code>&lt;triple&gt;</code> part can be any target triple like
+<code>target.x86_64-pc-windows-msvc</code>.</p>
+<h4><a class="header" href="#paths" id="paths"><code>paths</code></a></h4>
+<ul>
+<li>Type: array of strings (paths)</li>
+<li>Default: none</li>
+<li>Environment: not supported</li>
+</ul>
+<p>An array of paths to local packages which are to be used as overrides for
+dependencies. For more information see the <a href="specifying-dependencies.html#overriding-with-local-dependencies">Specifying Dependencies
+guide</a>.</p>
+<h4><a class="header" href="#alias" id="alias"><code>[alias]</code></a></h4>
+<ul>
+<li>Type: string or array of strings</li>
+<li>Default: see below</li>
+<li>Environment: <code>CARGO_ALIAS_&lt;name&gt;</code></li>
+</ul>
+<p>The <code>[alias]</code> table defines CLI command aliases. For example, running <code>cargo b</code> is an alias for running <code>cargo build</code>. Each key in the table is the
+subcommand, and the value is the actual command to run. The value may be an
+array of strings, where the first element is the command and the following are
+arguments. It may also be a string, which will be split on spaces into
+subcommand and arguments. The following aliases are built-in to Cargo:</p>
+<pre><code class="language-toml">[alias]
+b = &quot;build&quot;
+c = &quot;check&quot;
+t = &quot;test&quot;
+r = &quot;run&quot;
+</code></pre>
+<p>Aliases are not allowed to redefine existing built-in commands.</p>
+<h4><a class="header" href="#build" id="build"><code>[build]</code></a></h4>
+<p>The <code>[build]</code> table controls build-time operations and compiler settings.</p>
+<h5><a class="header" href="#buildjobs" id="buildjobs"><code>build.jobs</code></a></h5>
+<ul>
+<li>Type: integer</li>
+<li>Default: number of logical CPUs</li>
+<li>Environment: <code>CARGO_BUILD_JOBS</code></li>
+</ul>
+<p>Sets the maximum number of compiler processes to run in parallel.</p>
+<p>Can be overridden with the <code>--jobs</code> CLI option.</p>
+<h5><a class="header" href="#buildrustc" id="buildrustc"><code>build.rustc</code></a></h5>
+<ul>
+<li>Type: string (program path)</li>
+<li>Default: &quot;rustc&quot;</li>
+<li>Environment: <code>CARGO_BUILD_RUSTC</code> or <code>RUSTC</code></li>
+</ul>
+<p>Sets the executable to use for <code>rustc</code>.</p>
+<h5><a class="header" href="#buildrustc-wrapper" id="buildrustc-wrapper"><code>build.rustc-wrapper</code></a></h5>
+<ul>
+<li>Type: string (program path)</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_BUILD_RUSTC_WRAPPER</code> or <code>RUSTC_WRAPPER</code></li>
+</ul>
+<p>Sets a wrapper to execute instead of <code>rustc</code>. The first argument passed to the
+wrapper is the path to the actual <code>rustc</code>.</p>
+<h5><a class="header" href="#buildrustdoc" id="buildrustdoc"><code>build.rustdoc</code></a></h5>
+<ul>
+<li>Type: string (program path)</li>
+<li>Default: &quot;rustdoc&quot;</li>
+<li>Environment: <code>CARGO_BUILD_RUSTDOC</code> or <code>RUSTDOC</code></li>
+</ul>
+<p>Sets the executable to use for <code>rustdoc</code>.</p>
+<h5><a class="header" href="#buildtarget" id="buildtarget"><code>build.target</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: host platform</li>
+<li>Environment: <code>CARGO_BUILD_TARGET</code></li>
+</ul>
+<p>The default target platform triple to compile to.</p>
+<p>This may also be a relative path to a <code>.json</code> target spec file.</p>
+<p>Can be overridden with the <code>--target</code> CLI option.</p>
+<h5><a class="header" href="#buildtarget-dir" id="buildtarget-dir"><code>build.target-dir</code></a></h5>
+<ul>
+<li>Type: string (path)</li>
+<li>Default: &quot;target&quot;</li>
+<li>Environment: <code>CARGO_BUILD_TARGET_DIR</code> or <code>CARGO_TARGET_DIR</code></li>
+</ul>
+<p>The path to where all compiler output is placed. The default if not specified
+is a directory named <code>target</code> located at the root of the workspace.</p>
+<p>Can be overridden with the <code>--target-dir</code> CLI option.</p>
+<h5><a class="header" href="#buildrustflags" id="buildrustflags"><code>build.rustflags</code></a></h5>
+<ul>
+<li>Type: string or array of strings</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_BUILD_RUSTFLAGS</code> or <code>RUSTFLAGS</code></li>
+</ul>
+<p>Extra command-line flags to pass to <code>rustc</code>. The value may be a array of
+strings or a space-separated string.</p>
+<p>There are three mutually exclusive sources of extra flags. They are checked in
+order, with the first one being used:</p>
+<ol>
+<li><code>RUSTFLAGS</code> environment variable.</li>
+<li>All matching <code>target.&lt;triple&gt;.rustflags</code> and <code>target.&lt;cfg&gt;.rustflags</code>
+config entries joined together.</li>
+<li><code>build.rustflags</code> config value.</li>
+</ol>
+<p>Additional flags may also be passed with the <a href="../commands/cargo-rustc.html"><code>cargo rustc</code></a> command.</p>
+<p>If the <code>--target</code> flag (or <a href="#buildtarget"><code>build.target</code></a>) is used, then the
+flags will only be passed to the compiler for the target. Things being built
+for the host, such as build scripts or proc macros, will not receive the args.
+Without <code>--target</code>, the flags will be passed to all compiler invocations
+(including build scripts and proc macros) because dependencies are shared. If
+you have args that you do not want to pass to build scripts or proc macros and
+are building for the host, pass <code>--target</code> with the host triple.</p>
+<h5><a class="header" href="#buildrustdocflags" id="buildrustdocflags"><code>build.rustdocflags</code></a></h5>
+<ul>
+<li>Type: string or array of strings</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_BUILD_RUSTDOCFLAGS</code> or <code>RUSTDOCFLAGS</code></li>
+</ul>
+<p>Extra command-line flags to pass to <code>rustdoc</code>. The value may be a array of
+strings or a space-separated string.</p>
+<p>There are two mutually exclusive sources of extra flags. They are checked in
+order, with the first one being used:</p>
+<ol>
+<li><code>RUSTDOCFLAGS</code> environment variable.</li>
+<li><code>build.rustdocflags</code> config value.</li>
+</ol>
+<p>Additional flags may also be passed with the <a href="../commands/cargo-rustdoc.html"><code>cargo rustdoc</code></a> command.</p>
+<h5><a class="header" href="#buildincremental" id="buildincremental"><code>build.incremental</code></a></h5>
+<ul>
+<li>Type: bool</li>
+<li>Default: from profile</li>
+<li>Environment: <code>CARGO_BUILD_INCREMENTAL</code> or <code>CARGO_INCREMENTAL</code></li>
+</ul>
+<p>Whether or not to perform <a href="profiles.html#incremental">incremental compilation</a>. The default if not set is
+to use the value from the <a href="profiles.html">profile</a>. Otherwise this overrides the setting of
+all profiles.</p>
+<p>The <code>CARGO_INCREMENTAL</code> environment variable can be set to <code>1</code> to force enable
+incremental compilation for all profiles, or <code>0</code> to disable it. This env var
+overrides the config setting.</p>
+<h5><a class="header" href="#builddep-info-basedir" id="builddep-info-basedir"><code>build.dep-info-basedir</code></a></h5>
+<ul>
+<li>Type: string (path)</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_BUILD_DEP_INFO_BASEDIR</code></li>
+</ul>
+<p>Strips the given path prefix from dep info file paths.</p>
+<p>Cargo saves a &quot;dep info&quot; file with a <code>.d</code> suffix which is a Makefile-like
+syntax that indicates all of the file dependencies required to rebuild the
+artifact. These are intended to be used with external build systems so that
+they can detect if Cargo needs to be re-executed. The paths in the file are
+absolute by default. This config setting can be set to strip the given prefix
+from all of the paths for tools that require relative paths.</p>
+<p>The setting itself is a config-relative path. So, for example, a value of
+<code>&quot;.&quot;</code> would strip all paths starting with the parent directory of the <code>.cargo</code>
+directory.</p>
+<h5><a class="header" href="#buildpipelining" id="buildpipelining"><code>build.pipelining</code></a></h5>
+<ul>
+<li>Type: boolean</li>
+<li>Default: true</li>
+<li>Environment: <code>CARGO_BUILD_PIPELINING</code></li>
+</ul>
+<p>Controls whether or not build pipelining is used. This allows Cargo to
+schedule overlapping invocations of <code>rustc</code> in parallel when possible.</p>
+<h4><a class="header" href="#cargo-new" id="cargo-new"><code>[cargo-new]</code></a></h4>
+<p>The <code>[cargo-new]</code> table defines defaults for the <a href="../commands/cargo-new.html"><code>cargo new</code></a> command.</p>
+<h5><a class="header" href="#cargo-newname" id="cargo-newname"><code>cargo-new.name</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: from environment</li>
+<li>Environment: <code>CARGO_NAME</code> or <code>CARGO_CARGO_NEW_NAME</code></li>
+</ul>
+<p>Defines the name to use in the <code>authors</code> field when creating a new
+<code>Cargo.toml</code> file. If not specified in the config, Cargo searches the
+environment or your <code>git</code> configuration as described in the <a href="../commands/cargo-new.html"><code>cargo new</code></a>
+documentation.</p>
+<h5><a class="header" href="#cargo-newemail" id="cargo-newemail"><code>cargo-new.email</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: from environment</li>
+<li>Environment: <code>CARGO_EMAIL</code> or <code>CARGO_CARGO_NEW_EMAIL</code></li>
+</ul>
+<p>Defines the email address used in the <code>authors</code> field when creating a new
+<code>Cargo.toml</code> file. If not specified in the config, Cargo searches the
+environment or your <code>git</code> configuration as described in the <a href="../commands/cargo-new.html"><code>cargo new</code></a>
+documentation. The <code>email</code> value may be set to an empty string to prevent
+Cargo from placing an address in the authors field.</p>
+<h5><a class="header" href="#cargo-newvcs" id="cargo-newvcs"><code>cargo-new.vcs</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: &quot;git&quot; or &quot;none&quot;</li>
+<li>Environment: <code>CARGO_CARGO_NEW_VCS</code></li>
+</ul>
+<p>Specifies the source control system to use for initializing a new repository.
+Valid values are <code>git</code>, <code>hg</code> (for Mercurial), <code>pijul</code>, <code>fossil</code> or <code>none</code> to
+disable this behavior. Defaults to <code>git</code>, or <code>none</code> if already inside a VCS
+repository. Can be overridden with the <code>--vcs</code> CLI option.</p>
+<h4><a class="header" href="#http" id="http"><code>[http]</code></a></h4>
+<p>The <code>[http]</code> table defines settings for HTTP behavior. This includes fetching
+crate dependencies and accessing remote git repositories.</p>
+<h5><a class="header" href="#httpdebug" id="httpdebug"><code>http.debug</code></a></h5>
+<ul>
+<li>Type: boolean</li>
+<li>Default: false</li>
+<li>Environment: <code>CARGO_HTTP_DEBUG</code></li>
+</ul>
+<p>If <code>true</code>, enables debugging of HTTP requests. The debug information can be
+seen by setting the <code>CARGO_LOG=cargo::ops::registry=debug</code> environment
+variable (or use <code>trace</code> for even more information).</p>
+<p>Be wary when posting logs from this output in a public location. The output
+may include headers with authentication tokens which you don't want to leak!
+Be sure to review logs before posting them.</p>
+<h5><a class="header" href="#httpproxy" id="httpproxy"><code>http.proxy</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_HTTP_PROXY</code> or <code>HTTPS_PROXY</code> or <code>https_proxy</code> or <code>http_proxy</code></li>
+</ul>
+<p>Sets an HTTP and HTTPS proxy to use. The format is in <a href="https://ec.haxx.se/usingcurl-proxies.html">libcurl format</a> as in
+<code>[protocol://]host[:port]</code>. If not set, Cargo will also check the <code>http.proxy</code>
+setting in your global git configuration. If none of those are set, the
+<code>HTTPS_PROXY</code> or <code>https_proxy</code> environment variables set the proxy for HTTPS
+requests, and <code>http_proxy</code> sets it for HTTP requests.</p>
+<h5><a class="header" href="#httptimeout" id="httptimeout"><code>http.timeout</code></a></h5>
+<ul>
+<li>Type: integer</li>
+<li>Default: 30</li>
+<li>Environment: <code>CARGO_HTTP_TIMEOUT</code> or <code>HTTP_TIMEOUT</code></li>
+</ul>
+<p>Sets the timeout for each HTTP request, in seconds.</p>
+<h5><a class="header" href="#httpcainfo" id="httpcainfo"><code>http.cainfo</code></a></h5>
+<ul>
+<li>Type: string (path)</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_HTTP_CAINFO</code></li>
+</ul>
+<p>Path to a Certificate Authority (CA) bundle file, used to verify TLS
+certificates. If not specified, Cargo attempts to use the system certificates.</p>
+<h5><a class="header" href="#httpcheck-revoke" id="httpcheck-revoke"><code>http.check-revoke</code></a></h5>
+<ul>
+<li>Type: boolean</li>
+<li>Default: true (Windows) false (all others)</li>
+<li>Environment: <code>CARGO_HTTP_CHECK_REVOKE</code></li>
+</ul>
+<p>This determines whether or not TLS certificate revocation checks should be
+performed. This only works on Windows.</p>
+<h5><a class="header" href="#httpssl-version" id="httpssl-version"><code>http.ssl-version</code></a></h5>
+<ul>
+<li>Type: string or min/max table</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_HTTP_SSL_VERSION</code></li>
+</ul>
+<p>This sets the minimum TLS version to use. It takes a string, with one of the
+possible values of &quot;default&quot;, &quot;tlsv1&quot;, &quot;tlsv1.0&quot;, &quot;tlsv1.1&quot;, &quot;tlsv1.2&quot;, or
+&quot;tlsv1.3&quot;.</p>
+<p>This may alternatively take a table with two keys, <code>min</code> and <code>max</code>, which each
+take a string value of the same kind that specifies the minimum and maximum
+range of TLS versions to use.</p>
+<p>The default is a minimum version of &quot;tlsv1.0&quot; and a max of the newest version
+supported on your platform, typically &quot;tlsv1.3&quot;.</p>
+<h5><a class="header" href="#httplow-speed-limit" id="httplow-speed-limit"><code>http.low-speed-limit</code></a></h5>
+<ul>
+<li>Type: integer</li>
+<li>Default: 10</li>
+<li>Environment: <code>CARGO_HTTP_LOW_SPEED_LIMIT</code></li>
+</ul>
+<p>This setting controls timeout behavior for slow connections. If the average
+transfer speed in bytes per second is below the given value for
+<a href="#httptimeout"><code>http.timeout</code></a> seconds (default 30 seconds), then the
+connection is considered too slow and Cargo will abort and retry.</p>
+<h5><a class="header" href="#httpmultiplexing" id="httpmultiplexing"><code>http.multiplexing</code></a></h5>
+<ul>
+<li>Type: boolean</li>
+<li>Default: true</li>
+<li>Environment: <code>CARGO_HTTP_MULTIPLEXING</code></li>
+</ul>
+<p>When <code>true</code>, Cargo will attempt to use the HTTP2 protocol with multiplexing.
+This allows multiple requests to use the same connection, usually improving
+performance when fetching multiple files. If <code>false</code>, Cargo will use HTTP 1.1
+without pipelining.</p>
+<h5><a class="header" href="#httpuser-agent" id="httpuser-agent"><code>http.user-agent</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: Cargo's version</li>
+<li>Environment: <code>CARGO_HTTP_USER_AGENT</code></li>
+</ul>
+<p>Specifies a custom user-agent header to use. The default if not specified is a
+string that includes Cargo's version.</p>
+<h4><a class="header" href="#install" id="install"><code>[install]</code></a></h4>
+<p>The <code>[install]</code> table defines defaults for the <a href="../commands/cargo-install.html"><code>cargo install</code></a> command.</p>
+<h5><a class="header" href="#installroot" id="installroot"><code>install.root</code></a></h5>
+<ul>
+<li>Type: string (path)</li>
+<li>Default: Cargo's home directory</li>
+<li>Environment: <code>CARGO_INSTALL_ROOT</code></li>
+</ul>
+<p>Sets the path to the root directory for installing executables for <a href="../commands/cargo-install.html"><code>cargo install</code></a>. Executables go into a <code>bin</code> directory underneath the root.</p>
+<p>The default if not specified is Cargo's home directory (default <code>.cargo</code> in
+your home directory).</p>
+<p>Can be overridden with the <code>--root</code> command-line option.</p>
+<h4><a class="header" href="#net" id="net"><code>[net]</code></a></h4>
+<p>The <code>[net]</code> table controls networking configuration.</p>
+<h5><a class="header" href="#netretry" id="netretry"><code>net.retry</code></a></h5>
+<ul>
+<li>Type: integer</li>
+<li>Default: 2</li>
+<li>Environment: <code>CARGO_NET_RETRY</code></li>
+</ul>
+<p>Number of times to retry possibly spurious network errors.</p>
+<h5><a class="header" href="#netgit-fetch-with-cli" id="netgit-fetch-with-cli"><code>net.git-fetch-with-cli</code></a></h5>
+<ul>
+<li>Type: boolean</li>
+<li>Default: false</li>
+<li>Environment: <code>CARGO_NET_GIT_FETCH_WITH_CLI</code></li>
+</ul>
+<p>If this is <code>true</code>, then Cargo will use the <code>git</code> executable to fetch registry
+indexes and git dependencies. If <code>false</code>, then it uses a built-in <code>git</code>
+library.</p>
+<p>Setting this to <code>true</code> can be helpful if you have special authentication
+requirements that Cargo does not support.</p>
+<h5><a class="header" href="#netoffline" id="netoffline"><code>net.offline</code></a></h5>
+<ul>
+<li>Type: boolean</li>
+<li>Default: false</li>
+<li>Environment: <code>CARGO_NET_OFFLINE</code></li>
+</ul>
+<p>If this is <code>true</code>, then Cargo will avoid accessing the network, and attempt to
+proceed with locally cached data. If <code>false</code>, Cargo will access the network as
+needed, and generate an error if it encounters a network error.</p>
+<p>Can be overridden with the <code>--offline</code> command-line option.</p>
+<h4><a class="header" href="#registries" id="registries"><code>[registries]</code></a></h4>
+<p>The <code>[registries]</code> table is used for specifying additional <a href="registries.html">registries</a>. It
+consists of a sub-table for each named registry.</p>
+<h5><a class="header" href="#registriesnameindex" id="registriesnameindex"><code>registries.&lt;name&gt;.index</code></a></h5>
+<ul>
+<li>Type: string (url)</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_REGISTRIES_&lt;name&gt;_INDEX</code></li>
+</ul>
+<p>Specifies the URL of the git index for the registry.</p>
+<h5><a class="header" href="#registriesnametoken" id="registriesnametoken"><code>registries.&lt;name&gt;.token</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_REGISTRIES_&lt;name&gt;_TOKEN</code></li>
+</ul>
+<p>Specifies the authentication token for the given registry. This value should
+only appear in the <a href="#credentials">credentials</a> file. This is used for registry
+commands like <a href="../commands/cargo-publish.html"><code>cargo publish</code></a> that require authentication.</p>
+<p>Can be overridden with the <code>--token</code> command-line option.</p>
+<h4><a class="header" href="#registry" id="registry"><code>[registry]</code></a></h4>
+<p>The <code>[registry]</code> table controls the default registry used when one is not
+specified.</p>
+<h5><a class="header" href="#registryindex" id="registryindex"><code>registry.index</code></a></h5>
+<p>This value is deprecated and should not be used.</p>
+<h5><a class="header" href="#registrydefault" id="registrydefault"><code>registry.default</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: <code>&quot;crates-io&quot;</code></li>
+<li>Environment: <code>CARGO_REGISTRY_DEFAULT</code></li>
+</ul>
+<p>The name of the registry (from the <a href="#registries"><code>registries</code> table</a>) to use
+by default for registry commands like <a href="../commands/cargo-publish.html"><code>cargo publish</code></a>.</p>
+<p>Can be overridden with the <code>--registry</code> command-line option.</p>
+<h5><a class="header" href="#registrytoken" id="registrytoken"><code>registry.token</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_REGISTRY_TOKEN</code></li>
+</ul>
+<p>Specifies the authentication token for <a href="https://crates.io/">crates.io</a>. This value should only
+appear in the <a href="#credentials">credentials</a> file. This is used for registry
+commands like <a href="../commands/cargo-publish.html"><code>cargo publish</code></a> that require authentication.</p>
+<p>Can be overridden with the <code>--token</code> command-line option.</p>
+<h4><a class="header" href="#source" id="source"><code>[source]</code></a></h4>
+<p>The <code>[source]</code> table defines the registry sources available. See <a href="source-replacement.html">Source
+Replacement</a> for more information. It consists of a sub-table for each named
+source. A source should only define one kind (directory, registry,
+local-registry, or git).</p>
+<h5><a class="header" href="#sourcenamereplace-with" id="sourcenamereplace-with"><code>source.&lt;name&gt;.replace-with</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: none</li>
+<li>Environment: not supported</li>
+</ul>
+<p>If set, replace this source with the given named source.</p>
+<h5><a class="header" href="#sourcenamedirectory" id="sourcenamedirectory"><code>source.&lt;name&gt;.directory</code></a></h5>
+<ul>
+<li>Type: string (path)</li>
+<li>Default: none</li>
+<li>Environment: not supported</li>
+</ul>
+<p>Sets the path to a directory to use as a directory source.</p>
+<h5><a class="header" href="#sourcenameregistry" id="sourcenameregistry"><code>source.&lt;name&gt;.registry</code></a></h5>
+<ul>
+<li>Type: string (url)</li>
+<li>Default: none</li>
+<li>Environment: not supported</li>
+</ul>
+<p>Sets the URL to use for a registry source.</p>
+<h5><a class="header" href="#sourcenamelocal-registry" id="sourcenamelocal-registry"><code>source.&lt;name&gt;.local-registry</code></a></h5>
+<ul>
+<li>Type: string (path)</li>
+<li>Default: none</li>
+<li>Environment: not supported</li>
+</ul>
+<p>Sets the path to a directory to use as a local registry source.</p>
+<h5><a class="header" href="#sourcenamegit" id="sourcenamegit"><code>source.&lt;name&gt;.git</code></a></h5>
+<ul>
+<li>Type: string (url)</li>
+<li>Default: none</li>
+<li>Environment: not supported</li>
+</ul>
+<p>Sets the URL to use for a git repository source.</p>
+<h5><a class="header" href="#sourcenamebranch" id="sourcenamebranch"><code>source.&lt;name&gt;.branch</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: none</li>
+<li>Environment: not supported</li>
+</ul>
+<p>Sets the branch name to use for a git repository.</p>
+<p>If none of <code>branch</code>, <code>tag</code>, or <code>rev</code> is set, defaults to the <code>master</code> branch.</p>
+<h5><a class="header" href="#sourcenametag" id="sourcenametag"><code>source.&lt;name&gt;.tag</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: none</li>
+<li>Environment: not supported</li>
+</ul>
+<p>Sets the tag name to use for a git repository.</p>
+<p>If none of <code>branch</code>, <code>tag</code>, or <code>rev</code> is set, defaults to the <code>master</code> branch.</p>
+<h5><a class="header" href="#sourcenamerev" id="sourcenamerev"><code>source.&lt;name&gt;.rev</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: none</li>
+<li>Environment: not supported</li>
+</ul>
+<p>Sets the <a href="https://git-scm.com/docs/gitrevisions">revision</a> to use for a git repository.</p>
+<p>If none of <code>branch</code>, <code>tag</code>, or <code>rev</code> is set, defaults to the <code>master</code> branch.</p>
+<h4><a class="header" href="#target" id="target"><code>[target]</code></a></h4>
+<p>The <code>[target]</code> table is used for specifying settings for specific platform
+targets. It consists of a sub-table which is either a platform triple or a
+<a href="../../reference/conditional-compilation.html"><code>cfg()</code> expression</a>. The given values will be used if the target platform
+matches either the <code>&lt;triple&gt;</code> value or the <code>&lt;cfg&gt;</code> expression.</p>
+<pre><code class="language-toml">[target.thumbv7m-none-eabi]
+linker = &quot;arm-none-eabi-gcc&quot;
+runner = &quot;my-emulator&quot;
+rustflags = [&quot;…&quot;, &quot;…&quot;]
+
+[target.'cfg(all(target_arch = &quot;arm&quot;, target_os = &quot;none&quot;))']
+runner = &quot;my-arm-wrapper&quot;
+rustflags = [&quot;…&quot;, &quot;…&quot;]
+</code></pre>
+<p><code>cfg</code> values come from those built-in to the compiler (run <code>rustc --print=cfg</code>
+to view), values set by <a href="build-scripts.html">build scripts</a>, and extra <code>--cfg</code> flags passed to
+<code>rustc</code> (such as those defined in <code>RUSTFLAGS</code>). Do not try to match on
+<code>debug_assertions</code> or Cargo features like <code>feature=&quot;foo&quot;</code>.</p>
+<p>If using a target spec JSON file, the <code>&lt;triple&gt;</code> value is the filename stem.
+For example <code>--target foo/bar.json</code> would match <code>[target.bar]</code>.</p>
+<h5><a class="header" href="#targettriplear" id="targettriplear"><code>target.&lt;triple&gt;.ar</code></a></h5>
+<p>This option is deprecated and unused.</p>
+<h5><a class="header" href="#targettriplelinker" id="targettriplelinker"><code>target.&lt;triple&gt;.linker</code></a></h5>
+<ul>
+<li>Type: string (program path)</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_TARGET_&lt;triple&gt;_LINKER</code></li>
+</ul>
+<p>Specifies the linker which is passed to <code>rustc</code> (via <a href="../../rustc/codegen-options/index.html#linker"><code>-C linker</code></a>) when the
+<code>&lt;triple&gt;</code> is being compiled for. By default, the linker is not overridden.</p>
+<h5><a class="header" href="#targettriplerunner" id="targettriplerunner"><code>target.&lt;triple&gt;.runner</code></a></h5>
+<ul>
+<li>Type: string or array of strings (program path and args)</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_TARGET_&lt;triple&gt;_RUNNER</code></li>
+</ul>
+<p>If a runner is provided, executables for the target <code>&lt;triple&gt;</code> will be
+executed by invoking the specified runner with the actual executable passed as
+an argument. This applies to <a href="../commands/cargo-run.html"><code>cargo run</code></a>, <a href="../commands/cargo-test.html"><code>cargo test</code></a> and <a href="../commands/cargo-bench.html"><code>cargo bench</code></a>
+commands. By default, compiled executables are executed directly.</p>
+<p>The value may be an array of strings like <code>['/path/to/program', 'somearg']</code> or
+a space-separated string like <code>'/path/to/program somearg'</code>. The arguments will
+be passed to the runner with the executable to run as the last argument. If
+the runner program does not have path separators, it will search <code>PATH</code> for
+the runner executable.</p>
+<h5><a class="header" href="#targetcfgrunner" id="targetcfgrunner"><code>target.&lt;cfg&gt;.runner</code></a></h5>
+<p>This is similar to the <a href="#targettriplerunner">target runner</a>, but using
+a <a href="../../reference/conditional-compilation.html"><code>cfg()</code> expression</a>. If both a <code>&lt;triple&gt;</code> and <code>&lt;cfg&gt;</code> runner match,
+the <code>&lt;triple&gt;</code> will take precedence. It is an error if more than one
+<code>&lt;cfg&gt;</code> runner matches the current target.</p>
+<h5><a class="header" href="#targettriplerustflags" id="targettriplerustflags"><code>target.&lt;triple&gt;.rustflags</code></a></h5>
+<ul>
+<li>Type: string or array of strings</li>
+<li>Default: none</li>
+<li>Environment: <code>CARGO_TARGET_&lt;triple&gt;_RUSTFLAGS</code></li>
+</ul>
+<p>Passes a set of custom flags to the compiler for this <code>&lt;triple&gt;</code>. The value
+may be a array of strings or a space-separated string.</p>
+<p>See <a href="#buildrustflags"><code>build.rustflags</code></a> for more details on the different
+ways to specific extra flags.</p>
+<h5><a class="header" href="#targetcfgrustflags" id="targetcfgrustflags"><code>target.&lt;cfg&gt;.rustflags</code></a></h5>
+<p>This is similar to the <a href="#targettriplerustflags">target rustflags</a>, but
+using a <a href="../../reference/conditional-compilation.html"><code>cfg()</code> expression</a>. If several <code>&lt;cfg&gt;</code> and <code>&lt;triple&gt;</code> entries
+match the current target, the flags are joined together.</p>
+<h5><a class="header" href="#targettriplelinks" id="targettriplelinks"><code>target.&lt;triple&gt;.&lt;links&gt;</code></a></h5>
+<p>The links sub-table provides a way to <a href="build-scripts.html#overriding-build-scripts">override a build script</a>. When
+specified, the build script for the given <code>links</code> library will not be
+run, and the given values will be used instead.</p>
+<pre><code class="language-toml">[target.x86_64-unknown-linux-gnu.foo]
+rustc-link-lib = [&quot;foo&quot;]
+rustc-link-search = [&quot;/path/to/foo&quot;]
+rustc-flags = &quot;-L /some/path&quot;
+rustc-cfg = ['key=&quot;value&quot;']
+rustc-env = {key = &quot;value&quot;}
+rustc-cdylib-link-arg = [&quot;…&quot;]
+metadata_key1 = &quot;value&quot;
+metadata_key2 = &quot;value&quot;
+</code></pre>
+<h4><a class="header" href="#term" id="term"><code>[term]</code></a></h4>
+<p>The <code>[term]</code> table controls terminal output and interaction.</p>
+<h5><a class="header" href="#termverbose" id="termverbose"><code>term.verbose</code></a></h5>
+<ul>
+<li>Type: boolean</li>
+<li>Default: false</li>
+<li>Environment: <code>CARGO_TERM_VERBOSE</code></li>
+</ul>
+<p>Controls whether or not extra detailed messages are displayed by Cargo.</p>
+<p>Specifying the <code>--quiet</code> flag will override and disable verbose output.
+Specifying the <code>--verbose</code> flag will override and force verbose output.</p>
+<h5><a class="header" href="#termcolor" id="termcolor"><code>term.color</code></a></h5>
+<ul>
+<li>Type: string</li>
+<li>Default: &quot;auto&quot;</li>
+<li>Environment: <code>CARGO_TERM_COLOR</code></li>
+</ul>
+<p>Controls whether or not colored output is used in the terminal. Possible values:</p>
+<ul>
+<li><code>auto</code> (default): Automatically detect if color support is available on the
+terminal.</li>
+<li><code>always</code>: Always display colors.</li>
+<li><code>never</code>: Never display colors.</li>
+</ul>
+<p>Can be overridden with the <code>--color</code> command-line option.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../reference/profiles.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../reference/environment-variables.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../reference/profiles.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../reference/environment-variables.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
