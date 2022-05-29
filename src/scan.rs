@@ -3,10 +3,12 @@ use std::collections::{HashMap, BTreeMap};
 
 use anyhow::{Result, anyhow};
 use bio::alignment::{pairwise, AlignmentOperation};
+use rust_spoa::poa_consensus;
 
 use crate::kmer::{mbleven, split_kmers};
 use crate::math::{call_peak, editing_distance};
-use crate::spoa::poa_consensus;
+// use crate::spoa::poa_consensus;
+
 
 pub fn find_concensus(
     seq: &[u8],
@@ -30,7 +32,7 @@ pub fn find_concensus(
             tmp_seq.push_str("\0");
             seqs.push((tmp_seq.into_bytes()).to_vec());
         }
-        let consensus = poa_consensus(&seqs, 2, 10, -4, -8, -2, -24, -1);
+        let consensus = String::from(poa_consensus(&seqs, 2, 10, -4, -8, -2, -24, -1));
 
         // Check segment similarity
         let tail = seqs[seqs.len()-1].to_vec();
@@ -84,7 +86,7 @@ fn circular_finder(
     let d_support = d_estimate.2;
 
     if d_support < support_min {
-        return Err(anyhow!("No enough support reads."));
+        return Err(anyhow!("No enough supportting reads."));
     }
 
     // Find optimal hits

@@ -1,0 +1,7 @@
+from pyccs import find_consensus
+
+
+def test_ccs():
+    segment = 'TCCCGGTCATCATAACCCCGATCGTACCCTCTGTCATAATAGTCTCGGCGGCGAGAACTGCCACTGTAAATCTGATCCCTGTCTTGAGCTGCTCTCCATCCACCTCCCTCCACCACCTCCTCCTCTGTATGATCTGCTGTAATAG'
+    assert len(find_consensus(segment * 3)[1]) == len(segment)
+    return 0

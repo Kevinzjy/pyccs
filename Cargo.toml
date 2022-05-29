@@ -1,10 +1,20 @@
 [package]
-name = "circtools"
-version = "1.0.0"
-authors = ["Kevinzjy <kevinzjy1997@gmail.com>"]
-edition = "2018"
+name = "pyccs"
+version = "1.1.0"
+authors = ["Jinyang Zhang <zhangjinyang@biols.ac.cn"]
+edition = "2021"
 
+# [workspace]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "pyccs"
+path = "src/lib.rs"
+crate-type = ["lib", "cdylib"]
+
+[[bin]]
+name = "ccs"
+path = "src/bin/ccs.rs"
 
 [dependencies]
 docopt = "1.1.0"
@@ -16,10 +26,12 @@ libc = "0.2"
 seq_io = "0.3.1"
 flate2 = "1.0.20"
 indicatif = "0.15.0"
+pyo3 = { version = "0.16.5", features = ["extension-module", "anyhow"] }
+rust-spoa = { git = "https://github.com/Kevinzjy/rust-spoa" }
 
-[build-dependencies]
-cc = "1.0"
-cmake = "0.1"
+# [build-dependencies]
+# cc = "1.0"
+# cmake = "0.1"
 
 [features]
 static = []
